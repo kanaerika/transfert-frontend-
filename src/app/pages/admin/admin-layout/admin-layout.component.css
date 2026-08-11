@@ -1,0 +1,401 @@
+:host{
+  display:block;
+  height:100vh;
+}
+
+.layout{
+  display:flex;
+  height:100vh;
+  background:#f5f7fb;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+  width:260px;
+  background:#121418;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  padding:25px;
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  overflow:hidden;
+}
+
+.sidebar-scroll{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.18) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar{ width:6px; }
+.sidebar-scroll::-webkit-scrollbar-track{ background:transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.18); border-radius:10px; }
+.sidebar-scroll::-webkit-scrollbar-thumb:hover{ background:rgba(255,255,255,.32); }
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:40px;
+}
+
+.logo img{
+  width:45px;
+}
+
+.logo h2{
+  font-size:22px;
+  font-weight:700;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.menu a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 18px;
+  border-radius:12px;
+  text-decoration:none;
+  color:#d8d8d8;
+  font-weight:600;
+  transition:.3s;
+}
+
+.menu a:hover{
+  background:#1f232b;
+}
+
+.menu a.active{
+  background:#c1121f;
+  color:#fff;
+}
+
+.logout button{
+  width:100%;
+  border:none;
+  background:#c1121f;
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.logout button:hover{
+  background:#97111a;
+}
+
+.logout{
+  flex:none;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding-top:16px;
+  margin-top:12px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.statut-connexion{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 4px;
+  color:#9ca7b9;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.03em;
+}
+
+.point-connexion{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#2ecc71;
+  box-shadow:0 0 0 3px rgba(46,204,113,.18);
+}
+
+/* ================= CONTENT ================= */
+
+.content{
+  flex:1;
+  margin-left:260px;
+  padding:35px;
+  overflow:auto;
+}
+
+/* Identité visuelle plus présente dans la navigation */
+.sidebar{
+  width:272px;
+  padding:22px 18px;
+  background:linear-gradient(180deg, #101319 0%, #151922 100%);
+  border-right:1px solid rgba(255,255,255,.05);
+}
+
+.logo{
+  display:block;
+  margin:0 6px 34px;
+}
+
+.logo-panel{
+  display:flex;
+  align-items:center;
+  min-height:56px;
+  padding:9px 12px;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 8px 18px rgba(0,0,0,.16);
+}
+
+.logo img{
+  display:block;
+  width:100%;
+  max-height:38px;
+  object-fit:contain;
+}
+
+.logo-caption{
+  display:block;
+  margin:8px 4px 0;
+  color:#9ca7b9;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.menu a{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:12px 16px;
+  color:#cbd3df;
+  font-size:14.5px;
+}
+
+.menu a .ic, .menu-toggle .ic{
+  flex:none;
+  color:inherit;
+  opacity:.85;
+}
+
+.menu a.active{
+  box-shadow:0 9px 18px rgba(193,18,31,.25);
+}
+
+.menu a.active::before{
+  position:absolute;
+  left:-18px;
+  width:3px;
+  height:22px;
+  border-radius:0 3px 3px 0;
+  background:#fff;
+  content:'';
+}
+
+.content{
+  margin-left:272px;
+  padding:0;
+  transition:margin-left .25s ease;
+}
+
+/* ================= REPLI DU MENU (HAMBURGER) ================= */
+
+.layout{
+  transition:none;
+}
+
+.layout.sidebar-repliee .sidebar{
+  transform:translateX(-100%);
+}
+
+.layout.sidebar-repliee .content{
+  margin-left:0;
+}
+
+.sidebar{
+  transition:transform .25s ease;
+}
+
+/* ================= SOUS-MENU "TRANSACTIONS" (ARBORESCENCE) ================= */
+
+.menu-groupe{
+  display:flex;
+  flex-direction:column;
+}
+
+.menu-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  border:none;
+  background:none;
+  padding:12px 16px;
+  border-radius:12px;
+  color:#cbd3df;
+  font-weight:600;
+  font-size:14.5px;
+  font-family:inherit;
+  cursor:pointer;
+  text-align:left;
+}
+
+.menu-toggle-libelle{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.menu-toggle:hover{
+  background:#1f232b;
+  color:#fff;
+}
+
+.menu-toggle.active{
+  background:#c1121f;
+  color:#fff;
+  box-shadow:0 9px 18px rgba(193,18,31,.25);
+}
+
+.chevron{
+  flex:none;
+  transition:transform .18s ease;
+}
+
+.chevron.ouvert{
+  transform:rotate(90deg);
+}
+
+.sous-menu{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  margin:4px 0 4px 14px;
+  padding-left:14px;
+  border-left:1px solid rgba(255,255,255,.1);
+}
+
+.sous-menu a{
+  padding:10px 14px;
+  font-size:13.5px;
+  border-radius:10px;
+}
+
+/* ================= BARRE D'OUTILS (HAMBURGER + TITRE + TAILLE DU TEXTE) ================= */
+
+.barre-outils{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:16px 28px;
+  background:#fff;
+  border-bottom:1px solid var(--bordure, #eceef1);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.hamburger{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border:1px solid #e4e6ea;
+  border-radius:10px;
+  background:#fff;
+  color:#3a3d44;
+  cursor:pointer;
+}
+
+.hamburger:hover{
+  background:#f7f8fa;
+  border-color:#c9ccd2;
+}
+
+.barre-titres{
+  flex:1;
+  min-width:0;
+}
+
+.titre-section{
+  font-size:19px;
+  font-weight:700;
+  color:#16181d;
+  letter-spacing:-.02em;
+}
+
+.soustitre-section{
+  margin-top:2px;
+  font-size:12.5px;
+  color:#6b7078;
+  font-weight:500;
+}
+
+.barre-droite{
+  flex:none;
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.taille-texte{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid #e4e6ea;
+  border-radius:10px;
+  padding:6px 10px;
+  background:#fff;
+}
+
+.taille-texte button{
+  border:none;
+  background:#f1f2f4;
+  color:#3a3d44;
+  width:26px;
+  height:26px;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  line-height:1;
+}
+
+.taille-texte button:hover:not(:disabled){
+  background:#c1121f;
+  color:#fff;
+}
+
+.taille-texte button:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+.taille-valeur{
+  min-width:38px;
+  text-align:center;
+  font-size:11.5px;
+  font-weight:700;
+  color:#6b7078;
+}
+
+.contenu-page{
+  padding:28px;
+}

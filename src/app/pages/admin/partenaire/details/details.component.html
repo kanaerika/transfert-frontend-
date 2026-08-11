@@ -1,0 +1,36 @@
+<div class="page">
+
+    <button type="button" class="retour" (click)="retour()">← Retour aux partenaires</button>
+
+    @if (chargement) {
+        <div class="etat">Chargement…</div>
+    } @else if (erreur) {
+        <div class="etat erreur">{{ erreur }}</div>
+    } @else if (partenaire) {
+
+        <div class="header">
+            <div>
+                <h1>{{ partenaire.nom }}</h1>
+                <p>Informations générales du partenaire</p>
+            </div>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Email</h3>
+                <span>{{ partenaire.email }}</span>
+            </div>
+
+            <div class="card">
+                <h3>Statut</h3>
+                <span [class.active]="partenaire.actif" [class.disabled]="!partenaire.actif">
+                    {{ partenaire.actif ? 'Actif' : 'Désactivé' }}
+                </span>
+            </div>
+
+        </div>
+
+    }
+
+</div>

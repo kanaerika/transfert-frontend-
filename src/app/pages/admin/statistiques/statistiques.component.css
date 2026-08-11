@@ -1,0 +1,151 @@
+:host {
+  --rouge-afb: #C8102E;
+  --vert: #128C4A;
+  --orange: #E08A00;
+  --bleu: #1F6FEB;
+}
+
+.page-stats { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+
+.entete { margin-bottom: 24px; }
+.entete h1 { margin: 0; font-size: 24px; color: var(--texte); }
+.entete p { margin: 5px 0 0; font-size: 14px; color: var(--gris-texte); }
+
+.etat-chargement { display: grid; place-items: center; min-height: 300px; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--gris-bordure);
+  border-top-color: var(--rouge-afb);
+  border-radius: 50%;
+  animation: rotation .8s linear infinite;
+}
+@keyframes rotation { to { transform: rotate(360deg); } }
+
+/* KPI */
+.grille-kpi {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.carte-kpi {
+  background: var(--surface);
+  border: 1px solid var(--gris-bordure);
+  border-left: 4px solid var(--rouge-afb);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--ombre-carte);
+}
+.kpi-valeur { font-size: 28px; font-weight: 700; color: var(--texte); }
+.kpi-libelle { font-size: 13px; color: var(--gris-texte); }
+.kpi-principal  { border-left-color: var(--rouge-afb); }
+.kpi-succes     { border-left-color: var(--vert); }
+.kpi-info       { border-left-color: var(--bleu); }
+.kpi-attention  { border-left-color: var(--orange); }
+.kpi-neutre     { border-left-color: #9AA0AC; }
+
+/* Cartes génériques */
+.carte {
+  background: var(--surface);
+  border: 1px solid var(--gris-bordure);
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: var(--ombre-carte);
+}
+.carte-titre {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texte);
+  margin-bottom: 18px;
+}
+
+/* Graphes */
+.grille-graphes {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.donut-zone { display: flex; align-items: center; gap: 20px; }
+.donut-canvas { position: relative; width: 180px; height: 180px; flex: none; }
+.donut-centre {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.donut-total { font-size: 26px; font-weight: 700; color: var(--texte); }
+.donut-sous { font-size: 11px; color: var(--gris-texte); text-transform: uppercase; letter-spacing: .5px; }
+
+.legende { list-style: none; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.legende li { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.pastille { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.leg-libelle { color: var(--texte); flex: 1; }
+.leg-pct { font-weight: 700; color: var(--texte); }
+.leg-val { color: var(--gris-texte); font-size: 12px; }
+
+.ligne-canvas { height: 240px; }
+
+.vide-graphe {
+  height: 180px;
+  display: grid;
+  place-items: center;
+  color: var(--gris-texte);
+  font-size: 14px;
+}
+
+/* Bas */
+.grille-bas {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 18px;
+}
+
+.classement { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.classement li { display: flex; align-items: center; gap: 12px; }
+.rang {
+  width: 26px; height: 26px; flex: none;
+  border-radius: 50%;
+  background: var(--gris-clair);
+  color: var(--gris-texte);
+  display: grid; place-items: center;
+  font-size: 13px; font-weight: 700;
+}
+.rang.podium { background: var(--rouge-afb); color: #FFFFFF; }
+.clsm-nom { flex: 1; font-size: 14px; color: var(--texte); }
+.clsm-total { font-size: 13px; color: var(--gris-texte); }
+
+.tableau-activite { width: 100%; border-collapse: collapse; }
+.tableau-activite th {
+  text-align: left; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .3px;
+  color: var(--gris-texte); padding: 8px 10px;
+  border-bottom: 1px solid var(--gris-bordure);
+}
+.tableau-activite td {
+  padding: 10px; font-size: 13.5px; color: var(--texte);
+  border-bottom: 1px solid var(--gris-bordure);
+}
+.tableau-activite tr:last-child td { border-bottom: none; }
+.col-date { color: var(--gris-texte); font-size: 12.5px; }
+
+.badge-st { padding: 3px 9px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+.st-execute { background: var(--vert-fond); color: var(--vert); }
+.st-annule  { background: var(--orange-fond); color: var(--orange); }
+.st-rejete  { background: rgba(200,16,46,.12); color: var(--rouge-afb); }
+.st-cours   { background: var(--bleu-fond); color: var(--bleu); }
+
+@media (max-width: 900px) {
+  .grille-graphes, .grille-bas { grid-template-columns: 1fr; }
+  .donut-zone { flex-direction: column; }
+}
+@media (max-width: 640px) {
+  .page-stats { padding: 20px 16px; }
+}

@@ -1,0 +1,50 @@
+
+> frontend@0.0.0 build
+> ng build
+
+[33m❯[39m Building...
+[32m✔[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                    [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-TLN6IQV2.js[39m  [2m | [22m[2m-[22m                        [2m | [22m[36m151.32 kB[39m[2m | [22m               [36m44.15 kB[39m
+[32mchunk-ZT6ZTVN5.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m87.82 kB[39m[2m | [22m               [36m22.27 kB[39m
+[32mmain-DUZ74WCM.js[39m   [2m | [22m[2mmain[22m                     [2m | [22m [36m38.46 kB[39m[2m | [22m               [36m12.44 kB[39m
+[32mchunk-NQZIXN7N.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m18.50 kB[39m[2m | [22m                [36m5.30 kB[39m
+[32mchunk-67N3VCN7.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m16.51 kB[39m[2m | [22m                [36m5.09 kB[39m
+[32mstyles-IE5I76PX.css[39m[2m | [22m[2mstyles[22m                   [2m | [22m  [36m5.71 kB[39m[2m | [22m                [36m1.66 kB[39m
+[32mchunk-KJJDAAI4.js[39m  [2m | [22m[2m-[22m                        [2m | [22m  [36m1.76 kB[39m[2m | [22m              [36m604 bytes[39m
+[32mchunk-X25ONAFW.js[39m  [2m | [22m[2m-[22m                        [2m | [22m[36m894 bytes[39m[2m | [22m              [36m894 bytes[39m
+[32mchunk-DVO3WJD4.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m73 bytes[39m[2m | [22m               [36m73 bytes[39m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m            [2m | [22m[1m321.06 kB[22m[2m | [22m               [1m92.48 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                    [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-VYIIWCAF.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m35.10 kB[39m[2m | [22m                [36m7.48 kB[39m
+[32mchunk-3O34BEYI.js[39m  [2m | [22m[2mverification-component[22m   [2m | [22m [36m27.23 kB[39m[2m | [22m                [36m6.32 kB[39m
+[32mchunk-F3ANDRXX.js[39m  [2m | [22m[2m-[22m                        [2m | [22m [36m21.78 kB[39m[2m | [22m                [36m6.10 kB[39m
+[32mchunk-FRBOX4AK.js[39m  [2m | [22m[2mliste-component[22m          [2m | [22m [36m13.41 kB[39m[2m | [22m                [36m3.88 kB[39m
+[32mchunk-HEWQEDYK.js[39m  [2m | [22m[2mforgot-password-component[22m[2m | [22m [36m11.54 kB[39m[2m | [22m                [36m3.13 kB[39m
+[32mchunk-ZIBKUY33.js[39m  [2m | [22m[2mpartenaires-component[22m    [2m | [22m [36m11.30 kB[39m[2m | [22m                [36m3.25 kB[39m
+[32mchunk-CC2C5RPU.js[39m  [2m | [22m[2mlayout-component[22m         [2m | [22m  [36m8.69 kB[39m[2m | [22m                [36m2.62 kB[39m
+[32mchunk-HL6YXJPD.js[39m  [2m | [22m[2mdashboard-component[22m      [2m | [22m  [36m8.60 kB[39m[2m | [22m                [36m2.44 kB[39m
+[32mchunk-WH7ZCCQ2.js[39m  [2m | [22m[2mlogin-component[22m          [2m | [22m  [36m8.26 kB[39m[2m | [22m                [36m2.70 kB[39m
+[32mchunk-SFSXJ7U5.js[39m  [2m | [22m[2mlanding-component[22m        [2m | [22m  [36m7.77 kB[39m[2m | [22m                [36m2.31 kB[39m
+[32mchunk-PITPEZGD.js[39m  [2m | [22m[2mdetails-component[22m        [2m | [22m  [36m4.58 kB[39m[2m | [22m                [36m1.64 kB[39m
+[32mchunk-62YAO2EZ.js[39m  [2m | [22m[2m-[22m                        [2m | [22m  [36m4.36 kB[39m[2m | [22m                [36m1.48 kB[39m
+[32mchunk-VBAYNLRP.js[39m  [2m | [22m[2mdetails-component[22m        [2m | [22m  [36m4.22 kB[39m[2m | [22m                [36m1.50 kB[39m
+[32mchunk-BKBSMRMH.js[39m  [2m | [22m[2madmin-layout-component[22m   [2m | [22m  [36m3.64 kB[39m[2m | [22m                [36m1.18 kB[39m
+[32mchunk-MZLNPN57.js[39m  [2m | [22m[2mbilan-component[22m          [2m | [22m  [36m2.67 kB[39m[2m | [22m                [36m1.02 kB[39m
+[2m...and 3 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+Application bundle generation complete. [80.937 seconds] - 2026-07-21T09:45:54.286Z
+
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mangular:styles/component:css;22d8e220deaf0b933b344a7ee09a5575a1f6fa5e3e78d7c3c2093247725060e5;C:/Users/user/Desktop/suivi de transfert internationaux/frontend/src/app/pages/verification/verification.component.ts exceeded maximum budget. Budget 4.00 kB was not met by 3.00 kB with a total of 7.00 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mangular:styles/component:css;38c6e7915e01cd426076e9fe19c31ab12acec8fbec2339d4911c4c9e39be9d57;C:/Users/user/Desktop/suivi de transfert internationaux/frontend/src/app/pages/liste/liste.component.ts exceeded maximum budget. Budget 4.00 kB was not met by 324 bytes with a total of 4.32 kB.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1msrc/app/pages/admin/dashboard/dashboard.component.css exceeded maximum budget. Budget 4.00 kB was not met by 29 bytes with a total of 4.03 kB.[0m
+
+[39m[22m
+Output location: C:\Users\user\Desktop\suivi de transfert internationaux\frontend\dist\frontend
+

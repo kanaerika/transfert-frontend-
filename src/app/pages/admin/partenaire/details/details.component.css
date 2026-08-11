@@ -1,0 +1,71 @@
+.page{
+    padding:30px;
+}
+
+.retour{
+    background:none;
+    border:none;
+    color:#c1121f;
+    font-weight:600;
+    cursor:pointer;
+    padding:0;
+    margin-bottom:22px;
+    font-size:13.5px;
+}
+
+.retour:hover{
+    text-decoration:underline;
+}
+
+.etat{
+    background:white;
+    border-radius:12px;
+    padding:30px;
+    text-align:center;
+    color:#777;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.etat.erreur{
+    color:#c1121f;
+    font-weight:600;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:30px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.card h3{
+    color:#777;
+    margin-bottom:10px;
+}
+
+.active{
+    color:green;
+    font-weight:bold;
+}
+
+.disabled{
+    color:red;
+    font-weight:bold;
+}

@@ -1,0 +1,81 @@
+<div class="page-photo">
+  <div class="carte-connexion">
+
+    <div class="logo-carte">
+      <img src="assets/images/AFB.png" alt="Afriland First Bank">
+    </div>
+    <h1 class="titre-carte">
+      Créez votre<br>
+      <span class="accent">compte agent</span>
+    </h1>
+    <p class="desc-carte">Plateforme de suivi des transferts internationaux</p>
+
+    <!-- Chargement -->
+    @if (etat() === 'chargement') {
+      <div class="contenu">
+        <div class="spinner" aria-hidden="true"></div>
+        <h2>Validation en cours…</h2>
+        <p class="texte">Nous vérifions votre lien d'invitation.</p>
+      </div>
+    }
+
+    <!-- Succès -->
+    @if (etat() === 'succes') {
+      <div class="contenu">
+        <div class="icone icone-succes" aria-hidden="true">
+          <svg viewBox="0 0 52 52" width="52" height="52">
+            <circle class="cercle" cx="26" cy="26" r="24" fill="none"/>
+            <path class="coche" fill="none" d="M14 27l8 8 16-16"/>
+          </svg>
+        </div>
+
+        <h2>Invitation validée</h2>
+        <p class="texte">{{ message() }}</p>
+
+        <div class="encadre">
+          <strong>Prochaine étape</strong>
+          <p>
+            Connectez-vous avec le <strong>mot de passe temporaire</strong>
+            reçu par email. Vous devrez ensuite choisir votre propre mot de passe.
+          </p>
+        </div>
+
+        <button type="button" class="bouton bouton-principal" (click)="allerAConnexion()">
+          Aller à la connexion
+        </button>
+
+        <p class="redirection">
+          Redirection automatique dans {{ compteARebours() }} s…
+        </p>
+      </div>
+    }
+
+    <!-- Erreur -->
+    @if (etat() === 'erreur') {
+      <div class="contenu">
+        <div class="icone icone-erreur" aria-hidden="true">
+          <svg viewBox="0 0 52 52" width="52" height="52">
+            <circle class="cercle" cx="26" cy="26" r="24" fill="none"/>
+            <path class="croix" fill="none" d="M17 17l18 18M35 17L17 35"/>
+          </svg>
+        </div>
+
+        <h2>Validation impossible</h2>
+        <p class="texte">{{ message() }}</p>
+
+        <div class="encadre encadre-alerte">
+          <strong>Que faire ?</strong>
+          <p>
+            Contactez votre administrateur pour recevoir une nouvelle invitation.
+            Un lien reste valable 72 heures et ne peut servir qu'une seule fois.
+          </p>
+        </div>
+
+        <a routerLink="/connexion" class="bouton bouton-secondaire">
+          Retour à la connexion
+        </a>
+      </div>
+    }
+
+  </div>          <!-- fin .carte-connexion -->
+</div>            <!-- fin .page-photo -->

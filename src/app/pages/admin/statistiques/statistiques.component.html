@@ -1,0 +1,120 @@
+<div class="page-stats">
+
+  <header class="entete">
+    <div>
+      <h1>Statistiques</h1>
+      <p>Vue d'ensemble de votre activité de transferts.</p>
+    </div>
+  </header>
+
+  @if (chargement()) {
+    <div class="etat-chargement"><div class="spinner"></div></div>
+  } @else if (data(); as d) {
+
+    <!-- KPI cards -->
+    <div class="grille-kpi">
+      @for (k of d.kpis; track k.libelle) {
+        <div class="carte-kpi" [class]="varianteClasse(k.variante)">
+          <span class="kpi-valeur">{{ k.valeur }}</span>
+          <span class="kpi-libelle">{{ k.libelle }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Charts row -->
+    <div class="grille-graphes">
+
+      <!-- Donut : pourcentage des opérations -->
+      <div class="carte">
+        <div class="carte-titre">Répartition des opérations</div>
+        @if (totalOperations() > 0) {
+          <div class="donut-zone">
+            <div class="donut-canvas">
+              <canvas baseChart
+                [type]="'doughnut'"
+                [data]="donutData()"
+                [options]="donutOptions">
+              </canvas>
+              <div class="donut-centre">
+                <span class="donut-total">{{ totalOperations() }}</span>
+                <span class="donut-sous">opérations</span>
+              </div>
+            </div>
+            <ul class="legende">
+              @for (p of partsAvecPourcentage(); track p.libelle) {
+                <li>
+                  <span class="pastille" [style.background]="p.couleur"></span>
+                  <span class="leg-libelle">{{ p.libelle }}</span>
+                  <span class="leg-pct">{{ p.pourcentage }} %</span>
+                  <span class="leg-val">({{ p.valeur }})</span>
+                </li>
+              }
+            </ul>
+          </div>
+        } @else {
+          <div class="vide-graphe">Aucune opération enregistrée.</div>
+        }
+      </div>
+
+      <!-- Ligne : évolution -->
+      <div class="carte">
+        <div class="carte-titre">Évolution des transferts (12 mois)</div>
+        <div class="ligne-canvas">
+          <canvas baseChart
+            [type]="'line'"
+            [data]="ligneData()"
+            [options]="ligneOptions()">
+          </canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom row : classement + activité -->
+    <div class="grille-bas">
+
+      @if (d.classement.length > 0) {
+        <div class="carte">
+          <div class="carte-titre">{{ titreClassement() }}</div>
+          <ul class="classement">
+            @for (c of d.classement; track c.id; let i = $index) {
+              <li>
+                <span class="rang" [class.podium]="i < 3">{{ i + 1 }}</span>
+                <span class="clsm-nom">{{ c.nom }}</span>
+                <span class="clsm-total">{{ c.total }} transferts</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (d.activiteRecente.length > 0) {
+        <div class="carte">
+          <div class="carte-titre">Activité récente</div>
+          <table class="tableau-activite">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of d.activiteRecente; track t.id) {
+                <tr>
+                  <td>{{ t.nomClient }}</td>
+                  <td>{{ formatMontant(t.montant) }}</td>
+                  <td><span class="badge-st" [class]="classeStatut(t.statut)">{{ libelleStatut(t.statut) }}</span></td>
+                  <td class="col-date">{{ t.date }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </div>
+
+  }
+</div>

@@ -1,0 +1,643 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { TransfertService } from '../../services/transfert.service';
+import { ClientConnu, Transfert, VerificationRequest, VerificationResponse } from '../../models/models';
+import { imprimerBordereau } from '../../core/bordereau';
+import { TraductionService } from '../../core/traduction/traduction.service';
+
+@Component({
+  selector: 'app-verification',
+  standalone: true,
+  imports: [FormsModule],
+  template: `
+  <!-- ================= ÉTAPES ================= -->
+  <div class="cin etapes">
+    @for (e of [1,2,3,4]; track e) {
+      <div class="etape" [class.active]="etapeActuelle === e" [class.fait]="etapeActuelle > e">
+        <div class="etape-rond">
+          @if (etapeActuelle > e) { ✓ } @else { {{ e }} }
+        </div>
+        <div class="etape-libelle">{{ tr.t('verif.etape' + e) }}</div>
+      </div>
+      @if (e < 4) { <div class="etape-trait" [class.fait]="etapeActuelle > e"></div> }
+    }
+  </div>
+
+  <!-- ================= SUCCÈS D'EXÉCUTION ================= -->
+  @if (transfertExecute; as ok) {
+    <div class="cin carte succes-carte">
+      <div class="succes-anneau">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1f9d43" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7.5 12.4 10.5 15.4 16.5 8.6"/></svg>
+      </div>
+      <div class="succes-titre">{{ tr.t('verif.succesTitre') }}</div>
+      <div class="succes-sous">{{ tr.t('verif.succesSous') }}</div>
+
+      <div class="succes-grid">
+        <div class="scell"><div class="cl">{{ tr.t('verif.champNom') }}</div><div class="cv">{{ ok.nomClient }}</div></div>
+        <div class="scell"><div class="cl">{{ tr.t('verif.champPays') }}</div><div class="cv">{{ ok.paysDestination }}</div></div>
+        <div class="scell"><div class="cl">{{ tr.t('verif.champMontant') }}</div><div class="cv">{{ fmt(ok.montant) }} <span>FCFA</span></div></div>
+        <div class="scell scell-ref">
+          <div class="cl">{{ tr.t('verif.referenceVerification') }}</div>
+          <div class="cv">{{ ok.referenceVerification || ok.reference }}</div>
+        </div>
+      </div>
+
+      <div class="succes-actions">
+        <button class="lift btn" (click)="imprimerRecu()">{{ tr.t('verif.imprimerBordereau') }}</button>
+        <button class="navi btn-gris2" (click)="nouveau()">{{ tr.t('verif.nouveauTransfert') }}</button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= FORMULAIRE ================= -->
+  @if (!resultat && !recap && !transfertExecute) {
+    <div class="cin carte">
+
+      <div class="section-titre"><span class="section-num">01</span> {{ tr.t('verif.sectionIdentite') }}</div>
+      <div class="grid">
+        <div class="champ champ-nom">
+          <label>{{ tr.t('verif.labelNom') }} <span class="rouge">{{ tr.t('verif.labelNomSuffixe') }}</span></label>
+          <div class="in-wrap">
+            <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
+            <input class="in in-icone" [class.in-err]="manquants.includes('nom')" [ngModel]="form.nomClient"
+                   (ngModelChange)="saisirNom($event)" autocomplete="off"
+                   placeholder="{{ tr.t('verif.placeholderNom') }}" (keyup.enter)="verifier()"
+                   (blur)="fermerSuggestionsBientot()">
+          </div>
+          <!-- Volet des clients connus -->
+          @if (suggestions.length > 0) {
+            <div class="volet">
+              <div class="volet-titre">{{ tr.t('verif.clientConnu') }}</div>
+              @for (c of suggestions; track c.numeroPiece) {
+                <button type="button" class="volet-item" (mousedown)="choisirClient(c)">
+                  <span class="vi-nom">{{ c.nomClient }}</span>
+                  <span class="vi-infos">{{ c.dateNaissance }} · {{ c.naturePiece }} · {{ c.numeroPiece }}</span>
+                </button>
+              }
+            </div>
+          }
+        </div>
+        <div class="champ">
+          <label>{{ tr.t('verif.labelDateNaissance') }}</label>
+          <div class="in-wrap">
+            <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span>
+            <input class="in in-icone" [class.in-err]="manquants.includes('date')" [ngModel]="form.dateNaissance"
+                   (ngModelChange)="formaterDate($event)" inputmode="numeric" maxlength="10"
+                   placeholder="{{ tr.t('verif.placeholderDate') }}" (keyup.enter)="verifier()">
+          </div>
+        </div>
+        <div class="champ">
+          <label>{{ tr.t('verif.labelNature') }}</label>
+          <select class="in" [class.in-err]="manquants.includes('nature')" [(ngModel)]="form.naturePiece">
+            <option value="">{{ tr.t('commun.selectionner') }}</option>
+            @for (n of natures; track n) { <option [value]="n">{{ n }}</option> }
+          </select>
+        </div>
+        <div class="champ">
+          <label>{{ tr.t('verif.labelNumeroPiece') }}</label>
+          <div class="in-wrap">
+            <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4M14 14h4"/></svg></span>
+            <input class="in in-icone" [class.in-err]="manquants.includes('piece')" [(ngModel)]="form.numeroPiece"
+                   placeholder="{{ tr.t('verif.placeholderNumero') }}" (keyup.enter)="verifier()">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-titre section-titre-espace"><span class="section-num">02</span> {{ tr.t('verif.sectionDetails') }}</div>
+      <div class="grid">
+        <div class="champ">
+          <label>{{ tr.t('verif.labelMontant') }}</label>
+          <div class="in-wrap">
+            <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+            <input class="in in-icone montant" [class.in-err]="manquants.includes('montant')" [ngModel]="montantSaisi"
+                   (ngModelChange)="formaterMontant($event)" inputmode="numeric"
+                   placeholder="{{ tr.t('verif.placeholderMontant') }}" (keyup.enter)="verifier()">
+          </div>
+          <div class="rapides">
+            @for (m of montantsRapides; track m) {
+              <button type="button" class="puce" (click)="formaterMontant('' + m)">{{ fmt(m) }}</button>
+            }
+          </div>
+        </div>
+        <div class="champ">
+          <label>{{ tr.t('verif.labelPays') }}</label>
+          <div class="in-wrap">
+            <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+            <select class="in in-icone" [class.in-err]="manquants.includes('pays')" [(ngModel)]="form.paysDestination">
+              <option value="">{{ tr.t('verif.selectionnerPays') }}</option>
+              @for (p of pays; track p) { <option [value]="p">{{ p }}</option> }
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload">
+        <div class="upic">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 4"/></svg>
+        </div>
+        <div class="upload-texte">
+          <div class="ut">{{ tr.t('verif.apercuPiece') }}</div>
+          <div class="us">{{ pieceFichier ? pieceFichier : tr.t('verif.glisserScan') }}</div>
+        </div>
+        <input #entreeFichier type="file" accept="image/*,.pdf" hidden (change)="choisirFichier($event)">
+        <button type="button" class="btn-parcourir" (click)="entreeFichier.click()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          {{ tr.t('verif.parcourir') }}
+        </button>
+      </div>
+
+      @if (erreur) { <div class="err">{{ erreur }}</div> }
+
+      <div class="actions">
+        <button class="navi btn-annuler-form" (click)="retour()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          {{ tr.t('commun.annuler') }}
+        </button>
+        <button class="lift btn" (click)="verifier()" [disabled]="chargement">
+          {{ chargement ? tr.t('verif.verificationEnCours') : tr.t('verif.verifierPlafond') }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= RÉCAPITULATIF (confirmation) ================= -->
+  @if (recap && !resultat) {
+    <div class="cin carte recap-carte">
+      <div class="recap-tete">
+        <div class="recap-ic">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div>
+          <div class="disp recap-titre">{{ tr.t('verif.recapTitre') }}</div>
+          <div class="recap-sous">{{ tr.t('verif.recapSous') }}</div>
+        </div>
+      </div>
+
+      <div class="recap-grid">
+        <div class="rcell"><div class="cl">{{ tr.t('verif.champNom') }}</div><div class="cv">{{ form.nomClient }}</div></div>
+        <div class="rcell"><div class="cl">{{ tr.t('verif.champNaissance') }}</div><div class="cv">{{ form.dateNaissance }}</div></div>
+        <div class="rcell"><div class="cl">{{ tr.t('verif.champNature') }}</div><div class="cv">{{ form.naturePiece }}</div></div>
+        <div class="rcell"><div class="cl">{{ tr.t('verif.champNumero') }}</div><div class="cv">{{ form.numeroPiece }}</div></div>
+        <div class="rcell montant-cell"><div class="cl">{{ tr.t('verif.champMontant') }}</div><div class="cv gros">{{ fmt(form.montant) }} <span>FCFA</span></div></div>
+        <div class="rcell"><div class="cl">{{ tr.t('verif.champPays') }}</div><div class="cv">{{ form.paysDestination }}</div></div>
+      </div>
+
+      @if (erreur) { <div class="err">{{ erreur }}</div> }
+
+      <div class="recap-actions">
+        <button class="navi btn-modifier" (click)="modifier()" [disabled]="chargement">
+          {{ tr.t('verif.modifier') }}
+        </button>
+        <button class="lift btn" (click)="valider()" [disabled]="chargement">
+          {{ chargement ? tr.t('verif.verificationEnCours') : tr.t('verif.valider') }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ================= RÉSULTAT ================= -->
+  @if (resultat; as r) {
+    <div class="cin resultat">
+
+      <!-- Colonne gauche : verdict -->
+      <div class="carte verdict" [style.border-top]="'4px solid ' + couleur">
+        <div class="anneau" [style.background]="r.autorise ? 'rgba(31,157,67,.12)' : 'rgba(215,25,32,.1)'">
+          @if (r.autorise) {
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1f9d43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7.5 12.4 10.5 15.4 16.5 8.6"/></svg>
+          } @else {
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/><line x1="15.5" y1="8.5" x2="8.5" y2="15.5"/></svg>
+          }
+        </div>
+        <div class="disp verdict-titre" [style.color]="couleur">
+          {{ r.autorise ? tr.t('verif.autorise') : tr.t('verif.refuse') }}
+        </div>
+        <div class="verdict-sous">{{ r.message }}</div>
+
+        <div class="fiche">
+          <div class="cell"><div class="cl">{{ tr.t('verif.client') }}</div><div class="cv">{{ form.nomClient }}</div></div>
+          <div class="cell"><div class="cl">{{ tr.t('verif.destination') }}</div><div class="cv">{{ form.paysDestination }}</div></div>
+          <div class="cell"><div class="cl">{{ tr.t('verif.naissance') }}</div><div class="cv">{{ form.dateNaissance }}</div></div>
+          <div class="cell"><div class="cl">{{ tr.t('verif.numeroPiece') }}</div><div class="cv">{{ form.numeroPiece }}</div></div>
+        </div>
+      </div>
+
+      <!-- Colonne droite : jauge + exécution -->
+      <div class="colonne">
+        <div class="carte">
+          <div class="bloc-titre"><span class="rouge">↻</span> {{ tr.t('verif.dernierTransfert') }}</div>
+          <div class="dernier">
+            <div class="dinfos">
+              <div class="dnom">{{ r.dernierTransfert?.nomClient ?? form.nomClient }}</div>
+              <div class="ddate">{{ r.dernierTransfert?.dateTransfert ?? '—' }} · {{ fmt(r.dernierTransfert?.montant ?? 0) }} FCFA</div>
+              <div class="dstatut">{{ r.dernierTransfert?.statut ?? tr.t('verif.aucunTransfert') }}</div>
+            </div>
+            <div class="dfleche">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+            </div>
+          </div>
+
+          <!-- Jauge sombre -->
+          <div class="jauge">
+            <div class="jhaut">
+              <div>
+                <div class="jl">{{ tr.t('verif.montantTransferable') }}</div>
+                <div class="disp jv">{{ fmt(r.montantRestant) }}<span> FCFA</span></div>
+              </div>
+              <div class="jplafond">
+                <div class="jl2">{{ tr.t('verif.plafond') }}</div>
+                <div class="disp jp">{{ fmt(r.plafond) }}</div>
+              </div>
+            </div>
+            <div class="barre">
+              <div class="hachure" [style.width.%]="r.autorise ? r.pourcentageApres : r.pourcentageUtilise"></div>
+              <div class="pleine" [style.width.%]="r.pourcentageUtilise" [style.background]="couleur"></div>
+            </div>
+            <div class="jbas">
+              <div class="legende">
+                <span class="carre" [style.background]="couleur"></span>
+                {{ tr.t('verif.dejaUtilise') }} {{ fmt(r.cumulMois) }}
+              </div>
+              <span class="pct" [style.color]="couleur">{{ tr.t('verif.pctPlafond', { pct: r.pourcentageUtilise }) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exécution (si autorisé) -->
+        @if (r.autorise) {
+          <div class="carte">
+            <div class="consigne">
+              {{ tr.t('verif.consigne') }}
+            </div>
+            <input class="in ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
+            @if (erreurExec) { <div class="err">{{ erreurExec }}</div> }
+            <div class="exec-actions">
+              <button class="lift btn" (click)="executer()" [disabled]="chargement">
+                {{ chargement ? tr.t('verif.envoiEnCours') : tr.t('verif.soumettre') }}
+              </button>
+              <button class="navi btn-annuler" (click)="retour()">{{ tr.t('commun.annuler') }}</button>
+            </div>
+          </div>
+        } @else {
+          <button class="lift btn-retour" (click)="retour()">{{ tr.t('verif.retourVerification') }}</button>
+        }
+      </div>
+    </div>
+  }
+  `,
+  styles: [`
+    .carte { background:#fff; border:1px solid var(--bordure); border-radius:18px; padding:26px 28px; box-shadow:0 4px 20px -12px rgba(0,0,0,.25); }
+
+    /* Étapes */
+    .etapes { display:flex; align-items:center; padding:18px 28px; margin-bottom:20px; }
+    .etape { display:flex; align-items:center; gap:10px; flex:none; }
+    .etape-rond { width:30px; height:30px; border-radius:50%; background:#f1f2f4; color:#8a8f97; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #e4e6ea; transition:background .2s, border-color .2s, color .2s; }
+    .etape-libelle { font-size:12.5px; font-weight:700; color:#8a8f97; white-space:nowrap; transition:color .2s; }
+    .etape.active .etape-rond { background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); color:#fff; border-color:transparent; box-shadow:0 6px 14px -6px rgba(215,25,32,.6); }
+    .etape.active .etape-libelle { color:var(--encre); }
+    .etape.fait .etape-rond { background:#1f9d43; color:#fff; border-color:transparent; }
+    .etape.fait .etape-libelle { color:#1f9d43; }
+    .etape-trait { flex:1; height:2px; background:#e4e6ea; margin:0 10px; min-width:20px; transition:background .2s; }
+    .etape-trait.fait { background:#1f9d43; }
+    @media (max-width:640px) {
+      .etape-libelle { display:none; }
+      .etapes { padding:16px 18px; }
+    }
+    .section-titre { display:flex; align-items:center; gap:10px; margin:0 0 18px; font-size:12px; font-weight:800; letter-spacing:.05em; color:var(--encre); }
+    .section-titre::before { content:''; width:3px; height:16px; border-radius:2px; background:var(--rouge); }
+    .section-titre-espace { margin-top:30px; }
+    .section-num { color:var(--rouge); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
+    .champ { display:flex; flex-direction:column; gap:7px; }
+    .in-wrap { position:relative; }
+    .in-ic { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#9aa0a8; display:flex; pointer-events:none; }
+    .in-icone { padding-left:38px; }
+    .in-err { border-color:var(--rouge) !important; background:#fff6f6; }
+    .montant { font-weight:700; letter-spacing:.5px; }
+    .rapides { display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
+    .puce { border:1px solid #e0e3e8; background:#f7f8fa; color:#3a3d44; font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px; cursor:pointer; }
+    .puce:hover { border-color:var(--rouge); color:var(--rouge); }
+
+    /* Volet d'auto-complétion clients connus */
+    .champ-nom { position:relative; }
+    .volet { position:absolute; top:100%; left:0; right:0; z-index:30; margin-top:6px; background:#fff; border:1px solid var(--bordure); border-radius:13px; box-shadow:0 18px 40px -14px rgba(0,0,0,.35); overflow:hidden; }
+    .volet-titre { font-size:11px; font-weight:700; color:var(--gris); padding:10px 14px 7px; text-transform:uppercase; letter-spacing:.4px; }
+    .volet-item { display:flex; flex-direction:column; gap:2px; width:100%; text-align:left; background:none; border:none; border-top:1px solid #f1f2f4; padding:10px 14px; cursor:pointer; }
+    .volet-item:hover { background:#fdf3f3; }
+    .vi-nom { font-size:14px; font-weight:700; color:var(--encre); }
+    .vi-infos { font-size:12px; color:var(--gris); }
+
+    /* Récapitulatif */
+    .recap-carte { max-width:640px; margin:0 auto; }
+    .recap-tete { display:flex; align-items:flex-start; gap:14px; margin-bottom:22px; }
+    .recap-ic { width:52px; height:52px; flex:none; border-radius:14px; background:rgba(215,25,32,.08); display:flex; align-items:center; justify-content:center; }
+    .recap-titre { font-size:20px; font-weight:700; letter-spacing:-.3px; }
+    .recap-sous { font-size:13px; color:var(--gris); margin-top:4px; line-height:1.5; }
+    .recap-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .rcell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
+    .rcell .cv { word-break:break-word; }
+    .montant-cell { background:#111318; border-color:#111318; }
+    .montant-cell .cl { color:rgba(255,255,255,.5); }
+    .montant-cell .gros { color:#fff; font-size:19px; }
+    .montant-cell .gros span { font-size:12px; color:rgba(255,255,255,.55); }
+    .recap-actions { display:flex; gap:12px; margin-top:24px; }
+    .recap-actions .btn { flex:1; padding:14px; }
+    .succes-carte { max-width:520px; margin:0 auto; text-align:center; border-top:4px solid #1f9d43; }
+    .succes-anneau { width:76px; height:76px; margin:0 auto 18px; border-radius:50%; background:rgba(31,157,67,.1); display:flex; align-items:center; justify-content:center; }
+    .succes-titre { font-size:20px; font-weight:800; letter-spacing:-.3px; }
+    .succes-sous { font-size:13.5px; color:var(--gris); margin-top:8px; line-height:1.6; }
+    .succes-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:26px; text-align:left; }
+    .scell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
+    .scell .cv { word-break:break-word; }
+    .scell .cv span { font-size:11.5px; color:var(--gris); font-weight:600; }
+    .scell-ref { grid-column:1 / -1; background:#111318; border-color:#111318; }
+    .scell-ref .cl { color:rgba(255,255,255,.5); }
+    .scell-ref .cv { color:#fff; font-size:18px; font-weight:800; letter-spacing:1px; font-family:'SFMono-Regular',Consolas,monospace; }
+    .succes-actions { display:flex; flex-direction:column; gap:10px; margin-top:24px; }
+    .succes-actions .btn { padding:14px; }
+    .btn-gris2 { border:1px solid #e4e6ea; cursor:pointer; padding:13px; border-radius:12px; font-size:13.5px; font-weight:700; color:var(--encre); background:#fff; }
+    .btn-modifier { flex:none; border:1px solid #e4e6ea; cursor:pointer; padding:14px 22px; border-radius:13px; font-size:14px; font-weight:700; color:#3a3d44; background:#fff; }
+    .btn-modifier:hover { border-color:#c9ccd2; }
+    label { font-size:12.5px; font-weight:700; color:#3a3d44; }
+    .rouge { color:var(--rouge); }
+    .upload { display:flex; align-items:center; gap:14px; margin-top:22px; padding:15px 17px; border-radius:14px; background:#f7f8fa; border:1px dashed #d7dae0; }
+    .upic { flex:none; width:50px; height:50px; border-radius:12px; background:#fff; border:1px solid #e4e6ea; display:flex; align-items:center; justify-content:center; }
+    .upload-texte { flex:1; min-width:0; }
+    .ut { font-size:13px; font-weight:700; color:var(--encre); }
+    .us { font-size:11.5px; color:var(--gris); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .btn-parcourir { flex:none; display:flex; align-items:center; gap:7px; border:1px solid #f3c8ca; background:#fff; color:var(--rouge); cursor:pointer; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
+    .btn-parcourir:hover { background:#fdf3f3; }
+    .err { margin-top:15px; text-align:center; color:var(--rouge); font-size:13px; font-weight:700; }
+    .actions { display:flex; justify-content:flex-end; gap:12px; margin-top:22px; }
+    .btn-annuler-form { display:flex; align-items:center; gap:8px; border:1px solid #e4e6ea; background:#fff; color:var(--encre); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:13.5px; font-weight:700; }
+    .btn-annuler-form:hover { border-color:#c9ccd2; background:#f7f8fa; }
+    .btn { border:none; cursor:pointer; padding:14px 38px; border-radius:13px; font-size:14.5px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); box-shadow:0 14px 30px -12px rgba(215,25,32,.8); }
+    .btn:disabled { opacity:.7; cursor:default; }
+
+    /* Résultat */
+    .resultat { display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:start; }
+    .verdict { text-align:center; }
+    .anneau { width:88px; height:88px; margin:0 auto; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .verdict-titre { margin-top:16px; font-size:19px; font-weight:700; }
+    .verdict-sous { margin-top:6px; font-size:13.5px; color:var(--gris); line-height:1.5; }
+    .fiche { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; text-align:left; }
+    .cell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:11px 13px; }
+    .cl { font-size:10.5px; color:#8a8f97; font-weight:700; letter-spacing:.4px; }
+    .cv { font-size:13px; font-weight:700; margin-top:2px; color:var(--encre); }
+    .colonne { display:flex; flex-direction:column; gap:16px; }
+    .colonne .carte { padding:20px; }
+    .bloc-titre { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#3a3d44; margin-bottom:13px; }
+    .bloc-titre .rouge { font-size:15px; }
+    .dernier { display:flex; align-items:center; justify-content:space-between; background:#f7f8fa; border:1px solid var(--bordure); border-radius:13px; padding:13px 15px; }
+    .dnom { font-weight:700; font-size:14px; color:var(--encre); }
+    .ddate { font-size:12px; color:var(--gris); }
+    .dstatut { font-size:11.5px; color:var(--rouge); font-weight:700; margin-top:1px; }
+    .dfleche { width:38px; height:38px; border-radius:10px; background:#111318; display:flex; align-items:center; justify-content:center; }
+    .jauge { margin-top:16px; padding:18px; border-radius:15px; background:#111318; }
+    .jhaut { display:flex; align-items:flex-start; justify-content:space-between; }
+    .jl { font-size:11px; font-weight:700; letter-spacing:.6px; color:rgba(255,255,255,.5); }
+    .jv { font-size:34px; font-weight:700; color:#fff; line-height:1.1; margin-top:6px; }
+    .jv span { font-size:14px; font-weight:600; color:rgba(255,255,255,.5); }
+    .jplafond { text-align:right; flex:none; }
+    .jl2 { font-size:11px; font-weight:700; color:rgba(255,255,255,.4); }
+    .jp { font-size:15px; font-weight:700; color:rgba(255,255,255,.75); margin-top:3px; }
+    .barre { margin-top:16px; height:10px; border-radius:6px; background:rgba(255,255,255,.1); position:relative; overflow:hidden; }
+    .hachure { position:absolute; left:0; top:0; bottom:0; background:repeating-linear-gradient(45deg,rgba(255,255,255,.14),rgba(255,255,255,.14) 5px,transparent 5px,transparent 10px); }
+    .pleine { position:absolute; left:0; top:0; bottom:0; border-radius:6px; }
+    .jbas { display:flex; align-items:center; justify-content:space-between; margin-top:11px; }
+    .legende { display:flex; align-items:center; gap:7px; font-size:11.5px; color:rgba(255,255,255,.6); font-weight:600; }
+    .carre { width:9px; height:9px; border-radius:3px; display:inline-block; }
+    .pct { font-size:11.5px; font-weight:700; }
+    .consigne { font-size:12.5px; font-weight:600; color:#3a3d44; line-height:1.5; margin-bottom:12px; }
+    .ref { text-align:center; letter-spacing:2px; font-weight:600; border-color:var(--rouge) !important; }
+    .exec-actions { display:flex; gap:12px; margin-top:15px; }
+    .exec-actions .btn { flex:1; padding:13px; }
+    .btn-annuler { flex:none; border:1px solid #e4e6ea; cursor:pointer; padding:13px 20px; border-radius:12px; font-size:14px; font-weight:600; color:#3a3d44; background:#fff; }
+    .btn-retour { border:1px solid #e4e6ea; cursor:pointer; padding:14px; border-radius:13px; font-size:14px; font-weight:700; color:var(--encre); background:#fff; }
+  `]
+})
+export class VerificationComponent implements OnInit {
+  private transferts = inject(TransfertService);
+  private auth = inject(AuthService);
+  tr = inject(TraductionService);
+
+  natures: string[] = [];
+  pays: string[] = [];
+
+  form: VerificationRequest = this.vide();
+  montantSaisi = '';
+  montantsRapides = [50_000, 100_000, 250_000, 500_000, 1_000_000];
+  recap = false;
+  manquants: string[] = [];
+  suggestions: ClientConnu[] = [];
+  private timerSuggestions: ReturnType<typeof setTimeout> | undefined;
+  resultat: VerificationResponse | null = null;
+  reference = '';
+  transfertExecute: Transfert | null = null;
+  erreur = '';
+  erreurExec = '';
+  chargement = false;
+  pieceFichier = '';
+
+  ngOnInit(): void {
+    this.transferts.referentiel().subscribe({
+      next: ref => { this.natures = ref.naturesPiece; this.pays = ref.pays; },
+      error: () => {
+        this.natures = ["Carte Nationale d'Identité", 'Récépissé CNI', 'Passeport', 'Carte de séjour', 'Permis de conduire'];
+        this.pays = ['France', 'Belgique', 'Canada', 'États-Unis', 'Samoa américaines', 'Chine', 'Sénégal', 'Nigéria'];
+      }
+    });
+  }
+
+  get couleur(): string {
+    return this.resultat?.autorise ? '#1f9d43' : '#d71920';
+  }
+
+  /** Étape courante du parcours (1 = informations … 4 = reçu), affichée dans le bandeau d'étapes. */
+  get etapeActuelle(): number {
+    if (this.transfertExecute) return 4;
+    if (this.resultat) return 3;
+    if (this.recap) return 2;
+    return 1;
+  }
+
+  fmt(n: number): string {
+    return Number(n || 0).toLocaleString('fr-FR');
+  }
+
+  /** Saisie du nom : MAJUSCULES automatiques + recherche des clients connus. */
+  saisirNom(valeur: string): void {
+    // MAJUSCULES + un seul espace entre les noms
+    this.form.nomClient = (valeur || '').toUpperCase().replace(/\s{2,}/g, ' ');
+    clearTimeout(this.timerSuggestions);
+    if (this.form.nomClient.trim().length < 2) {
+      this.suggestions = [];
+      return;
+    }
+    // Petite pause (250 ms) pour ne pas interroger le serveur à chaque lettre
+    this.timerSuggestions = setTimeout(() => {
+      this.transferts.clientsConnus(this.form.nomClient.trim()).subscribe({
+        next: cs => this.suggestions = cs,
+        error: () => this.suggestions = []
+      });
+    }, 250);
+  }
+
+  /** L'agent clique sur un client connu : tout se remplit automatiquement. */
+  choisirClient(c: ClientConnu): void {
+    this.form.nomClient = c.nomClient.toUpperCase();
+    this.form.dateNaissance = c.dateNaissance;
+    this.form.naturePiece = c.naturePiece;
+    this.form.numeroPiece = c.numeroPiece;
+    this.suggestions = [];
+  }
+
+  fermerSuggestionsBientot(): void {
+    // Laisse le temps au clic sur une suggestion de s'exécuter avant de fermer
+    setTimeout(() => this.suggestions = [], 200);
+  }
+
+  /** Vérifie la cohérence du n° de pièce selon sa nature. */
+  private validerPiece(nature: string, numero: string): string {
+    if (!/^[A-Za-z0-9]+$/.test(numero)) {
+      return this.tr.t('verif.erreurPieceFormat');
+    }
+    const min = nature === "Carte Nationale d'Identité" ? 8
+              : nature === 'Passeport' ? 7 : 6;
+    if (numero.length < min) {
+      return this.tr.t('verif.erreurPieceCourt', { nature, min });
+    }
+    return '';
+  }
+
+  /** Formate le montant pendant la frappe : 250000 → "250 000" */
+  formaterMontant(valeur: string): void {
+    const chiffres = (valeur || '').replace(/\D/g, '').slice(0, 12);
+    this.montantSaisi = chiffres ? Number(chiffres).toLocaleString('fr-FR') : '';
+  }
+
+  /** Insère les tirets automatiquement : 01011990 → "01-01-1990" */
+  formaterDate(valeur: string): void {
+    const c = (valeur || '').replace(/\D/g, '').slice(0, 8);
+    let out = c;
+    if (c.length > 4) out = `${c.slice(0, 2)}-${c.slice(2, 4)}-${c.slice(4)}`;
+    else if (c.length > 2) out = `${c.slice(0, 2)}-${c.slice(2)}`;
+    this.form.dateNaissance = out;
+  }
+
+  verifier(): void {
+    this.form.montant = parseInt(this.montantSaisi.replace(/\D/g, ''), 10) || 0;
+    const f = this.form;
+
+    // Validation précise : chaque champ manquant est nommé et encadré en rouge
+    this.manquants = [];
+    const libelles: string[] = [];
+    if (!f.nomClient.trim())     { this.manquants.push('nom');     libelles.push(this.tr.t('verif.libelleNom')); }
+    if (f.dateNaissance.replace(/\D/g, '').length < 8)
+                                 { this.manquants.push('date');    libelles.push(this.tr.t('verif.libelleDate')); }
+    if (!f.naturePiece)          { this.manquants.push('nature');  libelles.push(this.tr.t('verif.libelleNature')); }
+    if (!f.numeroPiece.trim())   { this.manquants.push('piece');   libelles.push(this.tr.t('verif.libellePiece')); }
+    else {
+      const erreurPiece = this.validerPiece(f.naturePiece, f.numeroPiece.trim());
+      if (erreurPiece) {
+        this.manquants.push('piece');
+        this.erreur = erreurPiece;
+        return;
+      }
+    }
+    if (!f.montant)              { this.manquants.push('montant'); libelles.push(this.tr.t('verif.libelleMontant')); }
+    if (!f.paysDestination)      { this.manquants.push('pays');    libelles.push(this.tr.t('verif.libellePays')); }
+
+    if (libelles.length > 0) {
+      this.erreur = this.tr.t('verif.erreurRenseigner', { champs: libelles.join(', ') });
+      return;
+    }
+    this.erreur = '';
+    this.recap = true; // → page de confirmation "Le formulaire est-il bien rempli ?"
+  }
+
+  /** L'agent confirme le récapitulatif → appel du backend. */
+  valider(): void {
+    this.erreur = '';
+    this.chargement = true;
+    this.transferts.verifier(this.form).subscribe({
+      next: res => { this.resultat = res; this.recap = false; this.chargement = false; },
+      error: (err) => {
+        this.chargement = false;
+        if (err.status === 0) {
+          this.erreur = this.tr.t('verif.erreurServeur');
+        } else if (err.status === 401 || err.status === 403) {
+          this.erreur = this.tr.t('verif.erreurSession');
+        } else {
+          this.erreur = err?.error?.message ?? this.tr.t('verif.erreurVerification', { code: err.status });
+        }
+      }
+    });
+  }
+
+  /** Retour au formulaire en conservant les valeurs saisies. */
+  modifier(): void {
+    this.recap = false;
+    this.erreur = '';
+  }
+
+  executer(): void {
+    if (!this.reference.trim()) {
+      this.erreurExec = this.tr.t('verif.erreurReference');
+      return;
+    }
+    this.erreurExec = '';
+    this.chargement = true;
+   this.transferts.executer({
+  reference: this.reference,
+  nomClient: this.form.nomClient,
+  dateNaissance: this.form.dateNaissance,
+  naturePiece: this.form.naturePiece,
+  numeroPiece: this.form.numeroPiece,
+  montant: this.form.montant,
+  paysDestination: this.form.paysDestination,
+  canal: localStorage.getItem('canal') ?? ''
+}).subscribe({
+  next: t => {
+    this.transfertExecute = t;
+    this.chargement = false;
+    this.resultat = null;
+    this.reference = '';
+  },
+  error: err => {
+    this.erreurExec = err?.error?.message ?? this.tr.t('verif.erreurExecution');
+    this.chargement = false;
+  }
+});
+  }
+
+  imprimerRecu(): void {
+    if (this.transfertExecute) imprimerBordereau(this.transfertExecute);
+  }
+
+  nouveau(): void {
+    this.transfertExecute = null;
+    this.retour();
+  }
+
+  retour(): void {
+    this.resultat = null;
+    this.recap = false;
+    this.reference = '';
+    this.form = this.vide();
+    this.montantSaisi = '';
+    this.manquants = [];
+    this.erreur = '';
+    this.pieceFichier = '';
+  }
+
+  /** Sélection locale du scan de pièce d'identité (aperçu du nom de fichier uniquement, non transmis). */
+  choisirFichier(evenement: Event): void {
+    const fichier = (evenement.target as HTMLInputElement).files?.[0];
+    this.pieceFichier = fichier ? fichier.name : '';
+  }
+
+  private vide(): VerificationRequest {
+    return { nomClient: '', dateNaissance: '', naturePiece: '', numeroPiece: '', montant: 0, paysDestination: '' };
+  }
+}

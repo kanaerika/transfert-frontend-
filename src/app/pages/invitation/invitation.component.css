@@ -1,0 +1,229 @@
+:host {
+  --rouge-afb: #C8102E;
+  --rouge-fonce: #A00D25;
+  --gris-clair: #F5F6F8;
+  --gris-bordure: #E2E5EA;
+  --gris-texte: #5A6270;
+  --noir: #1A1D23;
+  --vert: #128C4A;
+}
+
+.page-photo {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 40px clamp(24px, 6vw, 90px);
+  background:
+    linear-gradient(100deg, rgba(255,255,255,.12), rgba(255,255,255,0) 45%),
+    url('/assets/images/landing-bg.jpg') center/cover no-repeat;
+}
+
+.carte-connexion {
+  width: 460px;
+  max-width: 100%;
+  background: #FFFFFF;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px -25px rgba(15,17,20,.5);
+  padding: 40px 40px 32px;
+  text-align: center;
+  animation: apparition .4s ease-out;
+}
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Entête ---- */
+
+.logo-carte {
+  display: inline-flex;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--gris-bordure);
+  padding: 8px 12px;
+  box-shadow: 0 8px 18px -8px rgba(215,25,32,.35);
+  margin-bottom: 22px;
+}
+
+.logo-carte img {
+  display: block;
+  height: 46px;
+  width: auto;
+  object-fit: contain;
+}
+
+.titre-carte {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.4px;
+  color: var(--noir);
+  margin: 0 0 10px;
+}
+
+.titre-carte .accent { color: var(--rouge-afb); }
+
+.desc-carte {
+  color: var(--gris-texte);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+
+/* ---- Contenu ---- */
+
+.contenu {
+  padding: 24px 0 0;
+  text-align: center;
+}
+
+.contenu h2 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  color: var(--noir);
+}
+
+.texte {
+  margin: 0 0 22px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--gris-texte);
+}
+
+/* ---- Spinner ---- */
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 22px;
+  border: 3px solid var(--gris-bordure);
+  border-top-color: var(--rouge-afb);
+  border-radius: 50%;
+  animation: rotation .8s linear infinite;
+}
+
+@keyframes rotation {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- Icônes animées ---- */
+
+.icone {
+  margin: 0 auto 20px;
+  width: 52px;
+  height: 52px;
+}
+
+.icone .cercle {
+  stroke-width: 2.5;
+  stroke-dasharray: 152;
+  stroke-dashoffset: 152;
+  animation: tracer .6s ease-out forwards;
+}
+
+.icone .coche,
+.icone .croix {
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: tracer .4s .5s ease-out forwards;
+}
+
+.icone-succes .cercle,
+.icone-succes .coche { stroke: var(--vert); }
+
+.icone-erreur .cercle,
+.icone-erreur .croix { stroke: var(--rouge-afb); }
+
+@keyframes tracer {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ---- Encadré ---- */
+
+.encadre {
+  text-align: left;
+  background: var(--gris-clair);
+  border-left: 3px solid var(--vert);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.encadre-alerte { border-left-color: var(--rouge-afb); }
+
+.encadre strong {
+  display: block;
+  font-size: 13px;
+  color: var(--noir);
+  margin-bottom: 5px;
+}
+
+.encadre p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--gris-texte);
+}
+
+/* ---- Boutons ---- */
+
+.bouton {
+  display: block;
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 9px;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.bouton-principal {
+  background: var(--rouge-afb);
+  color: #FFFFFF;
+}
+
+.bouton-principal:hover {
+  background: var(--rouge-fonce);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(200, 16, 46, .28);
+}
+
+.bouton-secondaire {
+  background: #FFFFFF;
+  color: var(--noir);
+  border: 1px solid var(--gris-bordure);
+}
+
+.bouton-secondaire:hover {
+  background: var(--gris-clair);
+  border-color: #C9CDD4;
+}
+
+.bouton:active { transform: translateY(0); }
+
+.redirection {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: #8A909C;
+}
+
+@media (max-width: 640px) {
+  .page-photo {
+    justify-content: center;
+    padding: 22px;
+    background:
+      linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.6)),
+      url('/assets/images/landing-bg.jpg') center/cover no-repeat;
+  }
+  .carte-connexion { padding: 30px 24px 26px; }
+}

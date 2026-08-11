@@ -1,0 +1,164 @@
+<div class="page-agents">
+
+  <!-- Entête -->
+  <header class="entete">
+    <div>
+      <h1>Gestion des agents</h1>
+      <p>Gérez les agents de votre institution : création, activation, invitations.</p>
+    </div>
+    @if (estAdmin()) {
+      <button class="btn-principal" (click)="ouvrirCreation()">
+        <span class="plus">+</span> Nouvel agent
+      </button>
+    }
+  </header>
+
+  @if (erreur() && !afficherModal()) {
+    <div class="bandeau-erreur">{{ erreur() }}</div>
+  }
+
+  @if (estAdmin()) {
+
+    <!-- Recherche -->
+    <div class="barre-recherche">
+      <span class="loupe"></span>
+      <input
+        type="text"
+        placeholder="Rechercher par nom, email ou agence…"
+        [ngModel]="recherche()"
+        (ngModelChange)="recherche.set($event)">
+      <span class="compteur">{{ listeFiltree().length }} agent(s)</span>
+    </div>
+
+    <!-- Tableau -->
+    <div class="carte-tableau">
+      @if (chargement()) {
+        <div class="etat-vide"><div class="spinner"></div><p>Chargement…</p></div>
+      } @else if (listeFiltree().length === 0) {
+        <div class="etat-vide">
+          <div class="illus"></div>
+          <h3>Aucun agent</h3>
+          <p>
+            @if (recherche()) { Aucun résultat pour « {{ recherche() }} ». }
+            @else { Créez votre premier agent pour commencer. }
+          </p>
+        </div>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>Agent</th>
+              <th>Email</th>
+              <th>Agence</th>
+              <th>Code</th>
+              <th>Statut</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of listeFiltree(); track a.id) {
+              <tr>
+                <td>
+                  <div class="cellule-agent">
+                    <div class="avatar">{{ a.nomComplet.charAt(0) }}</div>
+                    <span>{{ a.nomComplet }}</span>
+                  </div>
+                </td>
+                <td class="email">{{ a.email }}</td>
+                <td>{{ a.agence || '—' }}</td>
+                <td>{{ a.codeAgent || '—' }}</td>
+                <td>
+                  <span class="badge" [class]="classeStatut(a)">
+                    {{ a.statut || (a.actif ? 'Actif' : 'Inactif') }}
+                  </span>
+                </td>
+                <td class="col-actions">
+                  <div class="actions">
+                    <button class="ico" title="Modifier" (click)="ouvrirEdition(a)">✎</button>
+                    <button
+                      class="ico"
+                      [title]="a.actif ? 'Désactiver' : 'Réactiver'"
+                      (click)="basculerActif(a)">
+                      {{ a.actif ? '⏸' : '▶' }}
+                    </button>
+                    <button class="ico" title="Renvoyer l'invitation" (click)="renvoyerInvitation(a)">✉</button>
+                    <button class="ico danger" title="Réinitialiser" (click)="reinitialiser(a)">↻</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal création / édition -->
+@if (afficherModal()) {
+  <div class="voile" (click)="fermerModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-entete">
+        <h2>{{ edition() ? 'Modifier l\'agent' : 'Nouvel agent' }}</h2>
+        <button class="fermer" (click)="fermerModal()">×</button>
+      </div>
+
+      @if (erreur()) {
+        <div class="bandeau-erreur">{{ erreur() }}</div>
+      }
+
+      <div class="modal-corps">
+        <div class="champ">
+          <label>Nom complet *</label>
+          <input type="text" [(ngModel)]="agent.nomComplet" placeholder="Ex. Jean Kamga">
+        </div>
+
+        <div class="champ">
+          <label>Email *</label>
+          <input
+            type="email"
+            [(ngModel)]="agent.email"
+            [disabled]="edition()"
+            placeholder="agent@partenaire.com">
+          @if (edition()) {
+            <small>L'email ne peut pas être modifié.</small>
+          }
+        </div>
+
+        <div class="grille-2">
+          <div class="champ">
+            <label>Agence</label>
+            <input type="text" [(ngModel)]="agent.agence" placeholder="Ex. Douala Centre">
+          </div>
+          <div class="champ">
+            <label>Code agent</label>
+            <input type="text" [(ngModel)]="agent.codeAgent" placeholder="Ex. AG042">
+          </div>
+        </div>
+
+        @if (!edition()) {
+          <div class="note-info">
+            Un mot de passe temporaire et un lien d'invitation seront envoyés
+            automatiquement à l'agent par email.
+          </div>
+        }
+      </div>
+
+      <div class="modal-pied">
+        <button class="btn-annuler" (click)="fermerModal()">Annuler</button>
+        <button
+          class="btn-principal"
+          [disabled]="enregistrementEnCours()"
+          (click)="enregistrer()">
+          @if (enregistrementEnCours()) {
+            <span class="mini-spinner"></span> Enregistrement…
+          } @else {
+            {{ edition() ? 'Enregistrer' : 'Créer et inviter' }}
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

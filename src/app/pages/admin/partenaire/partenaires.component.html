@@ -1,0 +1,252 @@
+<div class="page">
+
+    <div class="top">
+
+        <div>
+
+            <h1>Gestion des partenaires</h1>
+
+            <p>
+                Gérez tous les partenaires de distribution de la plateforme.
+            </p>
+
+        </div>
+
+        <button class="btn-add" (click)="ouvrirModal()">
+          <span class="btn-add-icon">+</span> Nouveau partenaire
+          </button>
+    </div>
+
+    <div class="toolbar">
+
+        <div class="search">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <label for="search-partner" class="sr-only">Rechercher un partenaire</label>
+            <input
+                id="search-partner"
+                type="text"
+                placeholder="Rechercher un partenaire...">
+        </div>
+
+    </div>
+
+    <div class="table-wrap">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Partenaire</th>
+
+                <th>Email</th>
+
+                <th>Statut</th>
+
+                <th class="col-actions">Actions</th>
+
+            </tr>
+
+        </thead>
+
+<tbody>
+
+  <tr *ngFor="let p of partenaires">
+
+    <td>
+      <div class="partner-cell">
+        <span class="partner-avatar">{{ p.nom.charAt(0) }}</span>
+        <span class="partner-nom">{{ p.nom }}</span>
+      </div>
+    </td>
+
+    <td class="cell-muted">{{ p.email }}</td>
+
+    <td>
+
+      <span
+        class="badge"
+        [class.active]="p.actif"
+        [class.danger]="!p.actif">
+        <span class="badge-dot"></span>
+        {{ p.actif ? 'Actif' : 'Désactivé' }}
+
+      </span>
+
+    </td>
+
+    <td class="actions">
+      <button type="button" class="btn-ghost" (click)="voir(p)">Voir</button>
+      <button type="button" class="btn-ghost" (click)="modifier(p)">Modifier</button>
+      <button type="button" class="btn-ghost" (click)="inviter(p)">Invitation</button>
+      <button type="button" class="btn-ghost" [class.danger]="p.actif" (click)="basculerActivation(p)">
+        {{ p.actif ? 'Désactiver' : 'Activer' }}
+      </button>
+      <button type="button" class="btn-ghost danger" (click)="supprimer(p)">Supprimer</button>
+    </td>
+  </tr>
+
+  <tr *ngIf="!partenaires.length" class="empty-row">
+    <td colspan="4">
+      <div class="empty-state">
+        <p>Aucun partenaire pour le moment.</p>
+        <button type="button" class="btn-add" (click)="ouvrirModal()">+ Nouveau partenaire</button>
+      </div>
+    </td>
+  </tr>
+</tbody>
+
+    </table>
+
+    </div>
+
+</div>
+
+@if (afficherModal) {
+
+<div class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+              <p class="modal-eyebrow">Administration</p>
+              <h2>{{ edition ? 'Modifier le partenaire' : 'Nouveau partenaire' }}</h2>
+              <p class="modal-description">Renseignez les informations du partenaire et de son administrateur.</p>
+            </div>
+
+            <button
+                class="close"
+                type="button"
+                aria-label="Fermer la fenêtre"
+                (click)="fermerModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <form class="form" (ngSubmit)="enregistrer()">
+
+            <label for="partenaire-nom">Nom du partenaire</label>
+
+            <input
+                id="partenaire-nom"
+                name="nom"
+                required
+                placeholder="Ex. Express Union"
+                autocomplete="organization"
+                [(ngModel)]="partenaire.nom">
+
+            <label for="partenaire-administrateur">Nom de l'administrateur</label>
+
+            <input
+                id="partenaire-administrateur"
+                name="administrateur"
+                required
+                placeholder="Nom complet"
+                autocomplete="name"
+                [(ngModel)]="partenaire.administrateur">
+
+            <label for="partenaire-email">Adresse email</label>
+
+            <input
+                id="partenaire-email"
+                name="email"
+                type="email"
+                required
+                placeholder="nom@entreprise.com"
+                autocomplete="email"
+                [(ngModel)]="partenaire.email">
+
+            <label for="partenaire-telephone">Téléphone</label>
+
+            <input
+                id="partenaire-telephone"
+                name="telephone"
+                type="tel"
+                required
+                placeholder="Ex. 6 71 03 63 22"
+                autocomplete="tel"
+                [(ngModel)]="partenaire.telephone">
+
+            <label for="partenaire-pays">Pays</label>
+
+            <input
+                id="partenaire-pays"
+                name="pays"
+                required
+                placeholder="Ex. Cameroun"
+                autocomplete="country-name"
+                [(ngModel)]="partenaire.pays">
+
+          <p *ngIf="erreurFormulaire" class="form-error" role="alert">{{ erreurFormulaire }}</p>
+
+          <div class="footer">
+
+            <button
+                type="button"
+                class="cancel"
+                (click)="fermerModal()">
+
+                Annuler
+
+            </button>
+
+            <button
+                type="submit"
+                class="save"
+                [disabled]="enregistrementEnCours">
+
+                {{ enregistrementEnCours ? 'Création…' : (edition ? 'Enregistrer' : 'Créer le partenaire') }}
+
+            </button>
+
+          </div>
+        </form>
+
+    </div>
+
+</div>
+
+}
+
+@if (confirmation) {
+
+<div class="modal confirm-modal">
+
+    <div class="modal-content confirm-content">
+
+        <h2>{{ confirmation.titre }}</h2>
+        <p class="confirm-message">{{ confirmation.message }}</p>
+
+        <div class="footer">
+
+            <button type="button" class="cancel" (click)="annulerConfirmation()">Annuler</button>
+
+            <button
+                type="button"
+                class="save"
+                [class.danger-btn]="confirmation.danger"
+                (click)="validerConfirmation()">
+                {{ confirmation.libelleConfirmer }}
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}
+
+<div class="toast-stack" role="status" aria-live="polite">
+  <div *ngFor="let t of toasts" class="toast" [class.toast-error]="t.type === 'error'">
+    <span class="toast-icon">{{ t.type === 'success' ? '✓' : '!' }}</span>
+    <span class="toast-message">{{ t.message }}</span>
+    <button type="button" class="toast-close" aria-label="Fermer" (click)="fermerToast(t.id)">✕</button>
+  </div>
+</div>

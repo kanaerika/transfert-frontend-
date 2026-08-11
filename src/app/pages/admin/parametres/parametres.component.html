@@ -1,0 +1,115 @@
+<div class="page-param">
+
+  <header class="entete">
+    <h1>Paramètres</h1>
+    <p>Gérez votre compte, la sécurité et la configuration de la plateforme.</p>
+  </header>
+
+  <div class="conteneur">
+
+    <!-- Navigation onglets -->
+    <nav class="onglets">
+      <button [class.actif]="onglet() === 'profil'" (click)="onglet.set('profil')">Profil</button>
+      <button [class.actif]="onglet() === 'securite'" (click)="onglet.set('securite')">Sécurité</button>
+      @if (estAdminAfriland()) {
+        <button [class.actif]="onglet() === 'plafond'" (click)="onglet.set('plafond')">Plafond mensuel</button>
+      }
+    </nav>
+
+    <div class="panneau">
+
+      <!-- PROFIL -->
+      @if (onglet() === 'profil') {
+        <div class="profil-entete">
+          <div class="avatar-grand">{{ initiales(profil()?.nomComplet) }}</div>
+          <div>
+            <h2>{{ profil()?.nomComplet || 'Mon profil' }}</h2>
+            <p class="profil-email">{{ profil()?.email }}</p>
+          </div>
+        </div>
+
+        <div class="champ">
+          <label>Nom complet</label>
+          <input type="text" [(ngModel)]="formProfil.nomComplet">
+        </div>
+        <div class="champ">
+          <label>Agence</label>
+          <input type="text" [(ngModel)]="formProfil.agence">
+        </div>
+        <div class="champ champ-lecture">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="formProfil.email" autocomplete="email">
+          <small>Votre adresse email est utilisée pour vous connecter.</small>
+        </div>
+        <div class="pied">
+          <button class="btn" [disabled]="sauvProfil()" (click)="enregistrerProfil()">
+            @if (sauvProfil()) { <span class="mini-spinner"></span> Enregistrement… }
+            @else { Enregistrer }
+          </button>
+        </div>
+      }
+
+      <!-- SECURITE -->
+      @if (onglet() === 'securite') {
+        <h2>Changer le mot de passe</h2>
+        <div class="champ">
+          <label>Mot de passe actuel</label>
+          <input type="password" [(ngModel)]="mdp.ancien" autocomplete="current-password">
+        </div>
+        <div class="champ">
+          <label>Nouveau mot de passe</label>
+          <input type="password" [(ngModel)]="mdp.nouveau" autocomplete="new-password">
+          <small>Au moins 8 caractères, une lettre et un chiffre.</small>
+        </div>
+        <div class="champ">
+          <label>Confirmer</label>
+          <input type="password" [(ngModel)]="mdp.confirmation" autocomplete="new-password"
+                 [class.invalide]="correspondance() === false">
+          @if (correspondance() === false) {
+            <small class="err">Les mots de passe ne correspondent pas.</small>
+          }
+        </div>
+        <div class="pied">
+          <button class="btn" [disabled]="!mdpValide() || changementMdp()" (click)="changerMotDePasse()">
+            @if (changementMdp()) { <span class="mini-spinner"></span> Modification… }
+            @else { Changer le mot de passe }
+          </button>
+        </div>
+      }
+
+      <!-- PLAFOND -->
+      @if (onglet() === 'plafond' && estAdminAfriland()) {
+        <h2>Plafond mensuel Hors CEMAC</h2>
+        <p class="intro">
+          Montant maximum cumulé qu'un même client peut transférer par mois hors zone CEMAC.
+          La modification s'applique immédiatement à tous les partenaires.
+        </p>
+
+        @if (config(); as c) {
+          <div class="carte-actuel">
+            <span class="lib">Plafond actuel</span>
+            <span class="montant">{{ format(c.plafondMensuel) }} FCFA</span>
+            @if (c.modifiePar) {
+              <span class="trace">Dernière modification par {{ c.modifiePar }}</span>
+            }
+          </div>
+        }
+
+        <div class="champ">
+          <label>Nouveau plafond (FCFA)</label>
+          <input type="number" min="1" step="1000"
+                 [ngModel]="plafondSaisi()" (ngModelChange)="plafondSaisi.set($event)">
+          <small>Saisissez le montant en francs CFA, sans espaces.</small>
+        </div>
+
+        <div class="pied">
+          <button class="btn" [disabled]="sauvPlafond()" (click)="enregistrerPlafond()">
+            @if (sauvPlafond()) { <span class="mini-spinner"></span> Enregistrement… }
+            @else { Modifier le plafond }
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>
