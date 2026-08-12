@@ -33,14 +33,6 @@ import { ConfirmService } from './confirm.service';
     }
   `,
   styles: [`
-    :host {
-      --rouge-afb: #C8102E;
-      --rouge-fonce: #A00D25;
-      --gris-clair: #F5F6F8;
-      --gris-bordure: #E2E5EA;
-      --gris-texte: #5A6270;
-      --noir: #1A1D23;
-    }
     .voile {
       position: fixed;
       inset: 0;
@@ -57,7 +49,7 @@ import { ConfirmService } from './confirm.service';
     .dialogue {
       width: 100%;
       max-width: 420px;
-      background: #FFFFFF;
+      background: var(--surface);
       border-radius: 16px;
       padding: 28px 26px 22px;
       text-align: center;
@@ -77,10 +69,10 @@ import { ConfirmService } from './confirm.service';
       place-items: center;
       font-size: 26px;
       font-weight: 700;
-      background: rgba(31, 111, 235, 0.12);
-      color: #1F6FEB;
+      background: var(--bleu-fond);
+      color: var(--bleu);
     }
-    .icone.danger { background: rgba(200, 16, 46, 0.10); color: var(--rouge-afb); }
+    .icone.danger { background: var(--rouge-fond); color: var(--rouge-afb); }
     h3 { margin: 0 0 8px; font-size: 19px; color: var(--noir); }
     p { margin: 0 0 24px; font-size: 14px; line-height: 1.55; color: var(--gris-texte); }
     .actions { display: flex; gap: 12px; }
@@ -95,14 +87,14 @@ import { ConfirmService } from './confirm.service';
       transition: all .15s ease;
     }
     .btn-annuler {
-      background: #FFFFFF;
+      background: var(--surface);
       border: 1.5px solid var(--gris-bordure);
       color: var(--noir);
     }
     .btn-annuler:hover { background: var(--gris-clair); }
     .btn-confirmer {
       border: none;
-      background: #1F6FEB;
+      background: var(--bleu);
       color: #FFFFFF;
     }
     .btn-confirmer:hover { background: #1A5FCC; transform: translateY(-1px); }

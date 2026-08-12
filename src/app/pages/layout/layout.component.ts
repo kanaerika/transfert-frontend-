@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TraductionService } from '../../core/traduction/traduction.service';
+import { ThemeService } from '../../core/theme/theme.service';
  
 @Component({
   selector: 'app-layout',
@@ -83,6 +84,13 @@ import { TraductionService } from '../../core/traduction/traduction.service';
             </div>
           </div>
           <div class="droite">
+            <button class="bascule-theme" (click)="theme.basculer()" [title]="theme.theme() === 'sombre' ? 'Mode clair' : 'Mode sombre'">
+              @if (theme.theme() === 'sombre') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              }
+            </button>
             <div class="datejour">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
               {{ aujourdHui }}
@@ -100,7 +108,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   `,
   styles: [`
     :host { display:block; height:100vh; }
-    .fond { height:100vh; background:#f5f6f8; }
+    .fond { height:100vh; background:var(--fond); }
     .coque { display:flex; height:100vh; width:100%; }
 
     /* Sidebar */
@@ -130,7 +138,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
  
     /* Main */
     .principal { flex:1; margin-left:250px; height:100vh; display:flex; flex-direction:column; min-width:0; }
-    header { display:flex; align-items:center; justify-content:space-between; padding:22px 30px 14px; background:#fff; border-bottom:1px solid var(--bordure); position:relative; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:22px 30px 14px; background:var(--surface); border-bottom:1px solid var(--bordure); position:relative; }
     header::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:linear-gradient(90deg,var(--rouge),var(--rouge-fonce) 40%,transparent); }
     .entete-gauche { display:flex; align-items:center; gap:18px; }
     .marque-app { display:flex; align-items:center; gap:9px; }
@@ -140,13 +148,17 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .separateur { width:1px; height:38px; background:var(--bordure); }
     .titre { font-size:21px; font-weight:700; color:var(--encre); }
     .soustitre { font-size:12.5px; color:var(--gris); font-weight:500; margin-top:2px; }
-    .datejour { display:flex; align-items:center; gap:8px; padding:9px 13px; border:1px solid #e4e6ea; border-radius:11px; font-size:12.5px; font-weight:600; color:#3a3d44; background:#fff; }
+    .droite { display:flex; align-items:center; gap:10px; }
+    .bascule-theme { flex:none; display:flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid var(--bordure); border-radius:11px; background:var(--surface); color:var(--gris); cursor:pointer; }
+    .bascule-theme:hover { background:var(--gris-clair); color:var(--rouge); }
+    .datejour { display:flex; align-items:center; gap:8px; padding:9px 13px; border:1px solid var(--bordure); border-radius:11px; font-size:12.5px; font-weight:600; color:var(--encre); background:var(--surface); }
     .contenu { flex:1; overflow-y:auto; padding:22px 30px 28px; }
   `]
 })
 export class LayoutComponent {
   auth = inject(AuthService);
   tr = inject(TraductionService);
+  theme = inject(ThemeService);
   private router = inject(Router);
  
   get nomAgent(): string { return this.auth.agent?.nomComplet ?? this.tr.t('layout.agentParDefaut'); }

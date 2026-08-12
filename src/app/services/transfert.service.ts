@@ -49,4 +49,7 @@ export class TransfertService {
   bilan() {
     return this.http.get<Bilan>(`${this.api}/transferts/bilan`);
   }
+  detail(id: number) {
+    return this.http.get<Transfert>(`${this.api}/transferts/${id}`);
+  }
 }

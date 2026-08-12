@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 
@@ -19,9 +20,19 @@ export class StatistiquesComponent implements OnInit {
 
   private readonly service = inject(StatistiquesService);
   private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
 
   readonly data = signal<StatistiquesResponse | null>(null);
   readonly chargement = signal(true);
+  readonly filtreStatutActivite = signal<string | null>(null);
+
+  readonly activiteFiltree = computed(() => {
+    const liste = this.data()?.activiteRecente ?? [];
+    const filtre = this.filtreStatutActivite();
+    if (!filtre) return liste;
+    const enumCible = this.enumPourPartLibelle(filtre);
+    return liste.filter(t => t.statut === enumCible);
+  });
 
   /** Total d'opérations, pour afficher les pourcentages sous le donut. */
   readonly totalOperations = computed(() =>
@@ -168,5 +179,70 @@ export class StatistiquesComponent implements OnInit {
 
   titreClassement(): string {
     return this.data()?.portee === 'AGENT' ? '' : 'Meilleurs agents';
+  }
+
+  iconeKpi(libelle: string): 'agents' | 'actif' | 'inactif' | 'invitation' | 'transfert' | 'defaut' {
+    const l = libelle.toLowerCase();
+    if (l.includes('désactiv') || l.includes('inactif')) return 'inactif';
+    if (l.includes('actif')) return 'actif';
+    if (l.includes('invitation')) return 'invitation';
+    if (l.includes('transfert')) return 'transfert';
+    if (l.includes('agent')) return 'agents';
+    return 'defaut';
+  }
+
+  reference(id: number): string {
+    return 'V' + String(id).padStart(6, '0');
+  }
+
+  voirTransfert(id: number): void {
+    this.router.navigate(['/admin/transactions/details', id]);
+  }
+
+  voirTout(): void {
+    this.router.navigate(['/admin/transactions/historique']);
+  }
+
+  basculerFiltreActivite(libellePart: string): void {
+    this.filtreStatutActivite.update(actuel => actuel === libellePart ? null : libellePart);
+  }
+
+  private enumPourPartLibelle(libelle: string): string {
+    const l = libelle.toLowerCase();
+    if (l.includes('exécut')) return 'EXECUTE';
+    if (l.includes('annul')) return 'ANNULE';
+    if (l.includes('rejet')) return 'REJETE';
+    if (l.includes('cours')) return 'EN_COURS';
+    return libelle;
+  }
+
+  /** Clic sur une carte KPI : ouvre la liste correspondante, filtrée quand c'est pertinent. */
+  ouvrirKpi(libelle: string): void {
+    const l = libelle.toLowerCase();
+    if (l.includes('désactiv')) { this.router.navigate(['/admin/agents'], { queryParams: { statut: 'inactif' } }); return; }
+    if (l.includes('invitation')) { this.router.navigate(['/admin/agents'], { queryParams: { statut: 'attente' } }); return; }
+    if (l.includes('agents actifs')) { this.router.navigate(['/admin/agents'], { queryParams: { statut: 'actif' } }); return; }
+    if (l.includes('agent')) { this.router.navigate(['/admin/agents']); return; }
+    this.router.navigate(['/admin/transactions/historique']);
+  }
+
+  exporterRapport(d: StatistiquesResponse): void {
+    const lignes: string[] = [];
+    lignes.push('Indicateur;Valeur');
+    for (const k of d.kpis) lignes.push(`${k.libelle};${k.valeur}`);
+    lignes.push('');
+    lignes.push('Référence;Client;Montant;Statut;Date;Agent');
+    for (const t of d.activiteRecente) {
+      lignes.push(`${this.reference(t.id)};${t.nomClient};${t.montant};${this.libelleStatut(t.statut)};${t.date};${t.agentNom}`);
+    }
+
+    const contenu = '﻿' + lignes.join('\n');
+    const blob = new Blob([contenu], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = `statistiques-${new Date().toISOString().slice(0, 10)}.csv`;
+    lien.click();
+    URL.revokeObjectURL(url);
   }
 }

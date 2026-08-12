@@ -30,6 +30,13 @@
       <span class="compteur">{{ listeFiltree().length }} agent(s)</span>
     </div>
 
+    @if (statutFiltre()) {
+      <div class="chip-filtre">
+        Filtré : {{ statutFiltre() }}
+        <button type="button" (click)="effacerFiltreStatut()">✕</button>
+      </div>
+    }
+
     <!-- Tableau -->
     <div class="carte-tableau">
       @if (chargement()) {

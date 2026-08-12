@@ -71,6 +71,7 @@ export interface Bilan {
   annules: number;
   nonClotures: number;
   total: number;
+  lignes: Transfert[];
 }
 export interface ClientConnu {
   nomClient: string;

@@ -73,30 +73,30 @@ import { Partenaire } from '../../models/models';
   </div>
   `,
   styles: [`
-    .carte { background:#fff; border:1px solid var(--bordure); border-radius:18px; padding:24px 26px; margin-bottom:22px; }
-    h3 { margin:0 0 8px; font-size:16px; }
+    .carte { background:var(--surface); border:1px solid var(--bordure); border-radius:18px; padding:24px 26px; margin-bottom:22px; }
+    h3 { margin:0 0 8px; font-size:16px; color:var(--texte); }
     .aide { font-size:12.5px; color:var(--gris); margin:0 0 16px; line-height:1.6; }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .large { grid-column:1 / -1; }
     .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
     .btn { border:none; cursor:pointer; padding:12px 22px; border-radius:12px; font-size:13.5px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); }
-    .btn-gris { border:1px solid #e4e6ea; cursor:pointer; padding:12px 20px; border-radius:12px; font-size:13px; font-weight:700; color:var(--encre); background:#fff; }
+    .btn-gris { border:1px solid var(--bordure); cursor:pointer; padding:12px 20px; border-radius:12px; font-size:13px; font-weight:700; color:var(--encre); background:var(--surface); }
     .table-wrap { overflow-x:auto; }
     .tbl { width:100%; border-collapse:collapse; font-size:13.5px; }
-    .tbl th { text-align:left; font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#8a8f97; padding:12px 16px; border-bottom:1px solid var(--bordure); }
-    .tbl td { padding:15px 16px; border-bottom:1px solid var(--bordure); vertical-align:middle; }
+    .tbl th { text-align:left; font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:var(--gris-texte); padding:12px 16px; border-bottom:1px solid var(--bordure); }
+    .tbl td { padding:15px 16px; border-bottom:1px solid var(--bordure); vertical-align:middle; color:var(--texte); }
     .nom { font-weight:700; white-space:nowrap; }
     .ligne-inactive { opacity:.55; }
-    .badge { font-size:11px; font-weight:700; border-radius:20px; padding:4px 12px; background:#f1f2f4; color:#3a3d44; white-space:nowrap; }
-    .badge-ok { background:#e8f5e9; color:#2e7d32; }
-    .badge-ko { background:#fdecea; color:var(--rouge); }
-    .badge-attente { background:#fff6e5; color:#a3620a; }
+    .badge { font-size:11px; font-weight:700; border-radius:20px; padding:4px 12px; background:var(--gris-clair); color:var(--texte); white-space:nowrap; }
+    .badge-ok { background:var(--vert-fond); color:var(--vert); }
+    .badge-ko { background:var(--rouge-fond); color:var(--rouge); }
+    .badge-attente { background:var(--orange-fond); color:var(--orange); }
     .droite { text-align:right; }
     .actions-cell { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
-    .lien { font-size:11.5px; font-weight:700; cursor:pointer; border:1px solid #e4e6ea; background:#fff; color:var(--encre); padding:6px 12px; border-radius:8px; white-space:nowrap; }
-    .lien-danger { color:var(--rouge); border-color:#f3c8ca; }
+    .lien { font-size:11.5px; font-weight:700; cursor:pointer; border:1px solid var(--bordure); background:var(--surface); color:var(--encre); padding:6px 12px; border-radius:8px; white-space:nowrap; }
+    .lien-danger { color:var(--rouge); border-color:rgba(215,25,32,.3); }
     .err { color:var(--rouge); font-size:12.5px; font-weight:700; margin-top:10px; }
-    .ok { color:#2e7d32; background:#e8f5e9; border-radius:9px; padding:9px 12px; font-size:12.5px; font-weight:700; margin-top:10px; }
+    .ok { color:var(--vert); background:var(--vert-fond); border-radius:9px; padding:9px 12px; font-size:12.5px; font-weight:700; margin-top:10px; }
   `]
 })
 export class PartenairesComponent implements OnInit {

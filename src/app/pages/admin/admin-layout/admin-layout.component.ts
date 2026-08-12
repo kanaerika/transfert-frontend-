@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { ThemeService } from '../../../core/theme/theme.service';
 
 const CLE_TAILLE_TEXTE = 'admin-taille-texte';
 const TAILLE_MIN = 90;
@@ -23,6 +24,7 @@ export class AdminLayoutComponent {
 
   private auth = inject(AuthService);
   private router = inject(Router);
+  theme = inject(ThemeService);
 
   /** Seul l'admin Afriland onboarde d'autres partenaires ; tous les admins gèrent leurs agents. */
   get estAdminAfriland(): boolean {

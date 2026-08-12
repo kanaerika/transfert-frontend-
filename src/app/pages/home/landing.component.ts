@@ -172,25 +172,25 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   `,
   styles: [`
     :host { display:block; }
-    .page { min-height:100vh; background:#faf9f6; color:#16181d;
+    .page { min-height:100vh; background:var(--fond-page); color:var(--encre);
             font-family:'Inter', 'Segoe UI', sans-serif; }
 
     /* ---- Barre ---- */
     .haut { display:flex; justify-content:space-between; align-items:center;
-            padding:22px clamp(24px, 6vw, 72px); border-bottom:1px solid #eceae4; }
+            padding:22px clamp(24px, 6vw, 72px); border-bottom:1px solid var(--bordure); }
     .marque { display:flex; align-items:center; gap:13px; }
     .logo { height:76px; width:auto; object-fit:contain; }
     .haut-actions { display:flex; align-items:center; gap:14px; }
-    .btn-contour { border:1.5px solid #16181d; color:#16181d; text-decoration:none;
+    .btn-contour { border:1.5px solid var(--encre); color:var(--encre); text-decoration:none;
                    padding:10px 22px; border-radius:10px; font-size:13px; font-weight:700; }
-    .btn-contour:hover { background:#16181d; color:#fff; }
+    .btn-contour:hover { background:var(--encre); color:var(--surface); }
 
-    .toggle-langue { display:flex; align-items:center; gap:2px; border:1.5px solid #eceae4;
-                     background:#faf9f6; border-radius:10px; padding:3px; cursor:pointer; }
+    .toggle-langue { display:flex; align-items:center; gap:2px; border:1.5px solid var(--bordure);
+                     background:var(--surface-2); border-radius:10px; padding:3px; cursor:pointer; }
     .toggle-langue span { padding:6px 12px; border-radius:7px; font-size:12px; font-weight:800;
-                           letter-spacing:.03em; color:#8a8f97; transition:background .15s, color .15s; }
-    .toggle-langue span.actif { background:#16181d; color:#fff; }
-    .toggle-langue:hover span:not(.actif) { color:#4b5058; }
+                           letter-spacing:.03em; color:var(--gris-texte); transition:background .15s, color .15s; }
+    .toggle-langue span.actif { background:var(--encre); color:var(--surface); }
+    .toggle-langue:hover span:not(.actif) { color:var(--texte); }
 
     /* ---- Héros ---- */
     .heros { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);
@@ -216,51 +216,51 @@ import { TraductionService } from '../../core/traduction/traduction.service';
                  padding:0 clamp(24px, 6vw, 72px) clamp(40px, 6vh, 64px); }
     .stat { display:flex; align-items:center; gap:14px; }
     .stat-ic { display:flex; align-items:center; justify-content:center;
-               width:40px; height:40px; border-radius:50%; background:#fdeceb; color:#d71920;
+               width:40px; height:40px; border-radius:50%; background:var(--rouge-fond); color:#d71920;
                flex-shrink:0; }
     .stat div { display:flex; flex-direction:column; gap:3px; }
     .stat b { font-size:18px; letter-spacing:-.2px; }
-    .stat span { font-size:12px; color:#8a8f97; }
+    .stat span { font-size:12px; color:var(--gris-texte); }
 
     /* ---- La carte démo (signature de la page) ---- */
-    .demo { background:#fff; border:1px solid #eceae4; border-radius:22px;
+    .demo { background:var(--surface); border:1px solid var(--bordure); border-radius:22px;
             padding:26px 28px; box-shadow:0 30px 60px -30px rgba(22,24,29,.25);
             max-width:400px; justify-self:end; width:100%; }
     .demo-tete { font-size:11.5px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
-                 color:#8a8f97; display:flex; align-items:center; gap:8px; }
+                 color:var(--gris-texte); display:flex; align-items:center; gap:8px; }
     .demo-pastille { width:8px; height:8px; border-radius:50%; background:#d71920;
                      animation:pulse 2.2s infinite; }
     @keyframes pulse { 50% { opacity:.35; } }
     .demo-client { margin:18px 0 6px; }
     .demo-op { font-weight:700; font-size:15px; color:var(--encre); }
     .jauge { width:100%; margin:8px 0 2px; }
-    .jauge-fond { fill:none; stroke:#f0eee8; stroke-width:13; stroke-linecap:round; }
+    .jauge-fond { fill:none; stroke:var(--bordure); stroke-width:13; stroke-linecap:round; }
     .jauge-plein { fill:none; stroke:#d71920; stroke-width:13; stroke-linecap:round;
                    stroke-dasharray:267; stroke-dashoffset:67;
                    animation:remplir 1.4s .3s cubic-bezier(.3,.9,.3,1) both; }
     @keyframes remplir { from { stroke-dashoffset:267; } }
     .jauge-val { text-anchor:middle; font-size:23px; font-weight:800;
-                 font-family:'Bricolage Grotesque', sans-serif; fill:#16181d; }
-    .jauge-lib { text-anchor:middle; font-size:8.5px; fill:#8a8f97; }
-    .demo-verdict { background:#f0f9f1; color:#1d7a2c; border:1px solid #d8eedb;
+                 font-family:'Bricolage Grotesque', sans-serif; fill:var(--encre); }
+    .jauge-lib { text-anchor:middle; font-size:8.5px; fill:var(--gris-texte); }
+    .demo-verdict { background:var(--vert-fond); color:var(--vert); border:1px solid var(--vert);
                     border-radius:11px; padding:11px 14px; font-size:12.5px;
                     font-weight:700; text-align:center; margin-top:12px; }
 
     /* ---- Avantages ---- */
-    .avantages { padding:clamp(48px, 8vh, 88px) clamp(24px, 6vw, 72px); background:#fff;
-                 border-top:1px solid #eceae4; border-bottom:1px solid #eceae4; }
+    .avantages { padding:clamp(48px, 8vh, 88px) clamp(24px, 6vw, 72px); background:var(--surface);
+                 border-top:1px solid var(--bordure); border-bottom:1px solid var(--bordure); }
     .avantages-entete { max-width:560px; margin:0 auto 48px; text-align:center; }
     .avantages-entete .sur-titre { margin-left:auto; margin-right:auto; }
     .avantages-entete h2 { font-family:'Bricolage Grotesque', sans-serif; font-weight:800;
                            font-size:clamp(24px, 3vw, 34px); letter-spacing:-.6px; margin:0 0 12px; }
-    .avantages-entete p { font-size:15px; line-height:1.7; color:#4b5058; margin:0; }
+    .avantages-entete p { font-size:15px; line-height:1.7; color:var(--gris-texte); margin:0; }
     .grille-avantages { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
                         gap:24px; max-width:1100px; margin:0 auto; }
-    .carte-avantage { padding:26px; border:1px solid #eceae4; border-radius:16px; background:#faf9f6; }
+    .carte-avantage { padding:26px; border:1px solid var(--bordure); border-radius:16px; background:var(--surface-2); }
     .av-ic { display:flex; align-items:center; justify-content:center; width:44px; height:44px;
-             border-radius:12px; background:#fdeceb; color:#d71920; margin-bottom:18px; }
+             border-radius:12px; background:var(--rouge-fond); color:#d71920; margin-bottom:18px; }
     .carte-avantage h3 { margin:0 0 8px; font-size:16px; }
-    .carte-avantage p { margin:0; font-size:13.5px; line-height:1.7; color:#4b5058; }
+    .carte-avantage p { margin:0; font-size:13.5px; line-height:1.7; color:var(--gris-texte); }
 
     /* ---- Parcours ---- */
     .parcours { background:#16181d; color:#fff;

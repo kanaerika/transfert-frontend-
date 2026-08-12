@@ -5,6 +5,12 @@
       <h1>Statistiques</h1>
       <p>Vue d'ensemble de votre activité de transferts.</p>
     </div>
+    @if (data(); as d0) {
+      <button class="btn-exporter" (click)="exporterRapport(d0)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exporter le rapport
+      </button>
+    }
   </header>
 
   @if (chargement()) {
@@ -14,7 +20,17 @@
     <!-- KPI cards -->
     <div class="grille-kpi">
       @for (k of d.kpis; track k.libelle) {
-        <div class="carte-kpi" [class]="varianteClasse(k.variante)">
+        <div class="carte-kpi carte-kpi-clic" (click)="ouvrirKpi(k.libelle)">
+          <div class="kpi-ic" [class]="varianteClasse(k.variante)">
+            @switch (iconeKpi(k.libelle)) {
+              @case ('agents') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> }
+              @case ('actif') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> }
+              @case ('inactif') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg> }
+              @case ('invitation') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg> }
+              @case ('transfert') { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> }
+              @default { <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg> }
+            }
+          </div>
           <span class="kpi-valeur">{{ k.valeur }}</span>
           <span class="kpi-libelle">{{ k.libelle }}</span>
         </div>
@@ -42,7 +58,8 @@
             </div>
             <ul class="legende">
               @for (p of partsAvecPourcentage(); track p.libelle) {
-                <li>
+                <li class="legende-clic" [class.legende-active]="filtreStatutActivite() === p.libelle"
+                    (click)="basculerFiltreActivite(p.libelle)">
                   <span class="pastille" [style.background]="p.couleur"></span>
                   <span class="leg-libelle">{{ p.libelle }}</span>
                   <span class="leg-pct">{{ p.pourcentage }} %</span>
@@ -90,23 +107,43 @@
 
       @if (d.activiteRecente.length > 0) {
         <div class="carte">
-          <div class="carte-titre">Activité récente</div>
-          <table class="tableau-activite">
+          <div class="carte-titre-ligne">
+            <div class="carte-titre">Activité récente</div>
+            <a class="voir-tout" (click)="voirTout()">Voir tout
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+          @if (filtreStatutActivite(); as f) {
+            <div class="chip-filtre">
+              Filtré : {{ f }}
+              <button type="button" (click)="basculerFiltreActivite(f)">✕</button>
+            </div>
+          }
+          @if (activiteFiltree().length === 0) {
+            <div class="vide-graphe">Aucune opération pour ce filtre.</div>
+          }
+          <table class="tableau-activite" [class.masque]="activiteFiltree().length === 0">
             <thead>
               <tr>
+                <th>Référence</th>
                 <th>Client</th>
                 <th>Montant</th>
                 <th>Statut</th>
                 <th>Date</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              @for (t of d.activiteRecente; track t.id) {
-                <tr>
+              @for (t of activiteFiltree(); track t.id) {
+                <tr class="ligne-activite" (click)="voirTransfert(t.id)">
+                  <td class="col-ref">{{ reference(t.id) }}</td>
                   <td>{{ t.nomClient }}</td>
                   <td>{{ formatMontant(t.montant) }}</td>
                   <td><span class="badge-st" [class]="classeStatut(t.statut)">{{ libelleStatut(t.statut) }}</span></td>
                   <td class="col-date">{{ t.date }}</td>
+                  <td class="col-plus">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                  </td>
                 </tr>
               }
             </tbody>

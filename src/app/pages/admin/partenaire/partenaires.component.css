@@ -1,16 +1,16 @@
 :host{
-    --primary:#c1121f;
-    --primary-dark:#8d0f18;
-    --background:#f5f7fb;
-    --card:#ffffff;
-    --text:#202124;
-    --gray:#6c757d;
-    --border:#e9ecef;
-    --success:#22c55e;
-    --success-bg:#eafaf0;
-    --warning:#f59e0b;
-    --danger:#ef4444;
-    --danger-bg:#fdecec;
+    --primary: var(--rouge-afb);
+    --primary-dark: var(--rouge-fonce);
+    --background: var(--fond-page);
+    --card: var(--surface);
+    --text: var(--texte);
+    --gray: var(--gris-texte);
+    --border: var(--bordure);
+    --success: var(--vert);
+    --success-bg: var(--vert-fond);
+    --warning: var(--orange);
+    --danger: var(--rouge);
+    --danger-bg: var(--rouge-fond);
 }
 
 *{
@@ -58,13 +58,13 @@
     margin:0;
     font-size:1.9rem;
     font-weight:700;
-    color:#1f1f1f;
+    color:var(--text);
     letter-spacing:-.02em;
 }
 
 .top p{
     margin:6px 0 0;
-    color:#6b7280;
+    color:var(--gray);
     line-height:1.5;
     font-size:.95rem;
 }
@@ -85,7 +85,7 @@
     left:14px;
     top:50%;
     transform:translateY(-50%);
-    color:#9ca3af;
+    color:var(--gray);
     font-size:16px;
     pointer-events:none;
 }
@@ -97,13 +97,14 @@
     border-radius:10px;
     font-size:14px;
     background:var(--background);
+    color:var(--text);
     outline:none;
     transition:border-color .15s ease, background .15s ease;
 }
 
 .search input:focus{
     border-color:var(--primary);
-    background:#fff;
+    background:var(--card);
 }
 
 /* ================= ADD BUTTON ================= */
@@ -155,7 +156,7 @@ table{
 }
 
 thead tr{
-    background:#fafbfc;
+    background:var(--surface-2);
 }
 
 th{
@@ -165,7 +166,7 @@ th{
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:.04em;
-    color:#8a8f98;
+    color:var(--gray);
     border-bottom:1px solid var(--border);
 }
 
@@ -186,7 +187,7 @@ tbody tr{
 }
 
 tbody tr:hover{
-    background:#fafbfd;
+    background:var(--gris-clair);
 }
 
 tbody tr:last-child td{
@@ -194,7 +195,7 @@ tbody tr:last-child td{
 }
 
 .cell-muted{
-    color:#6b7280;
+    color:var(--gray);
 }
 
 .partner-cell{
@@ -234,8 +235,8 @@ tbody tr:last-child td{
     padding:7px 12px;
     font-size:12.5px;
     font-weight:600;
-    color:#374151;
-    background:#f3f4f6;
+    color:var(--text);
+    background:var(--gris-clair);
     border:1px solid transparent;
     border-radius:8px;
     cursor:pointer;
@@ -244,16 +245,16 @@ tbody tr:last-child td{
 }
 
 .btn-ghost:hover{
-    background:#e5e7eb;
+    background:var(--border);
 }
 
 .btn-ghost.danger{
     background:var(--danger-bg);
-    color:#b91c1c;
+    color:var(--danger);
 }
 
 .btn-ghost.danger:hover{
-    background:#f9d3d3;
+    background:rgba(215,25,32,.2);
 }
 
 /* ================= EMPTY STATE ================= */
@@ -269,7 +270,7 @@ tbody tr:last-child td{
     justify-content:center;
     gap:14px;
     padding:48px 16px;
-    color:#8a8f98;
+    color:var(--gray);
     font-size:14px;
 }
 
@@ -294,12 +295,12 @@ tbody tr:last-child td{
 
 .badge.active{
     background:var(--success-bg);
-    color:#15803d;
+    color:var(--success);
 }
 
 .badge.danger{
     background:var(--danger-bg);
-    color:#b91c1c;
+    color:var(--danger);
 }
 
 /* ================= MODAL ================= */
@@ -324,7 +325,8 @@ tbody tr:last-child td{
     max-width:100%;
     max-height:90vh;
     overflow-y:auto;
-    background:white;
+    background:var(--card);
+    color:var(--text);
     border-radius:18px;
     padding:30px;
     animation:zoom .2s ease-out;
@@ -363,17 +365,19 @@ tbody tr:last-child td{
     font-size:22px;
     font-weight:700;
     margin:0;
+    color:var(--text);
 }
 
 .modal-description{
     margin-top:6px;
     font-size:13.5px;
-    color:#6b7280;
+    color:var(--gray);
 }
 
 .close{
     border:none;
-    background:#f3f4f6;
+    background:var(--gris-clair);
+    color:var(--text);
     width:32px;
     height:32px;
     border-radius:50%;
@@ -384,7 +388,7 @@ tbody tr:last-child td{
 }
 
 .close:hover{
-    background:#e5e7eb;
+    background:var(--border);
 }
 
 .form{
@@ -398,16 +402,18 @@ tbody tr:last-child td{
     font-size:13.5px;
     margin-bottom:8px;
     display:block;
-    color:#374151;
+    color:var(--text);
 }
 
 .form input{
     width:100%;
     padding:12px 13px;
     font-size:14.5px;
-    border:1px solid #ddd;
+    border:1px solid var(--border);
     border-radius:10px;
     outline:none;
+    background:var(--card);
+    color:var(--text);
     transition:border-color .12s ease, box-shadow .12s ease;
 }
 
@@ -418,7 +424,7 @@ tbody tr:last-child td{
 
 .form-error{
     grid-column:1 / -1;
-    color:#b91c1c;
+    color:var(--danger);
     background:var(--danger-bg);
     padding:10px 14px;
     border-radius:10px;
@@ -434,7 +440,8 @@ tbody tr:last-child td{
 }
 
 .cancel{
-    background:#ececec;
+    background:var(--gris-clair);
+    color:var(--text);
     border:none;
     padding:12px 22px;
     border-radius:10px;
@@ -445,7 +452,7 @@ tbody tr:last-child td{
 }
 
 .cancel:hover{
-    background:#e0e0e0;
+    background:var(--border);
 }
 
 .save{
@@ -474,7 +481,7 @@ tbody tr:last-child td{
 }
 
 .save.danger-btn:hover:not(:disabled){
-    background:#c92e2e;
+    background:var(--rouge-fonce);
 }
 
 /* ================= CONFIRMATION MODAL ================= */
@@ -488,11 +495,12 @@ tbody tr:last-child td{
     font-size:19px;
     font-weight:700;
     margin-bottom:12px;
+    color:var(--text);
 }
 
 .confirm-message{
     font-size:14px;
-    color:#4b5563;
+    color:var(--gray);
     line-height:1.55;
 }
 
@@ -514,13 +522,13 @@ tbody tr:last-child td{
     align-items:flex-start;
     gap:10px;
     padding:14px 16px;
-    background:#fff;
+    background:var(--card);
     border-left:4px solid var(--success);
     border-radius:10px;
     box-shadow:0 10px 30px rgba(0,0,0,.15);
     animation:slide-in .2s ease-out;
     font-size:13.5px;
-    color:#1f1f1f;
+    color:var(--text);
 }
 
 .toast-error{
@@ -536,14 +544,14 @@ tbody tr:last-child td{
     flex-shrink:0;
     border-radius:50%;
     background:var(--success-bg);
-    color:#15803d;
+    color:var(--success);
     font-weight:700;
     font-size:12px;
 }
 
 .toast-error .toast-icon{
     background:var(--danger-bg);
-    color:#b91c1c;
+    color:var(--danger);
 }
 
 .toast-message{
@@ -554,7 +562,7 @@ tbody tr:last-child td{
 .toast-close{
     border:none;
     background:none;
-    color:#9ca3af;
+    color:var(--gray);
     cursor:pointer;
     font-size:12px;
     flex-shrink:0;
@@ -562,7 +570,7 @@ tbody tr:last-child td{
 }
 
 .toast-close:hover{
-    color:#4b5563;
+    color:var(--text);
 }
 
 @keyframes slide-in{

@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 import { AgentService, AgentRequest } from '../../../services/agent.service';
 import { AuthService } from '../../../services/auth.service';
@@ -22,10 +23,12 @@ export class AgentsComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly confirm = inject(ConfirmService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly agents = signal<Agent[]>([]);
   readonly chargement = signal(false);
   readonly recherche = signal('');
+  readonly statutFiltre = signal<string | null>(null);
 
   readonly afficherModal = signal(false);
   readonly edition = signal(false);
@@ -39,8 +42,11 @@ export class AgentsComponent implements OnInit {
   readonly estAdmin = computed(() => this.auth.role() === 'ADMIN');
   readonly listeFiltree = computed(() => {
     const q = this.recherche().trim().toLowerCase();
-    if (!q) return this.agents();
-    return this.agents().filter(a =>
+    const statut = this.statutFiltre();
+    let liste = this.agents();
+    if (statut) liste = liste.filter(a => this.classeStatut(a) === statut);
+    if (!q) return liste;
+    return liste.filter(a =>
       a.nomComplet.toLowerCase().includes(q) ||
       a.email.toLowerCase().includes(q) ||
       (a.agence?.toLowerCase().includes(q) ?? false)
@@ -52,7 +58,12 @@ export class AgentsComponent implements OnInit {
       this.erreur.set('Cette page est réservée aux administrateurs de partenaire.');
       return;
     }
+    this.statutFiltre.set(this.route.snapshot.queryParamMap.get('statut'));
     this.charger();
+  }
+
+  effacerFiltreStatut(): void {
+    this.statutFiltre.set(null);
   }
 
   charger(): void {

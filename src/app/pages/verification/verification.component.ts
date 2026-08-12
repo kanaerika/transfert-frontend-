@@ -147,6 +147,13 @@ import { TraductionService } from '../../core/traduction/traduction.service';
         </button>
       </div>
 
+      @if (formulaireRempli()) {
+        <button type="button" class="barre-effacer" (click)="effacerFormulaire()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+          Effacer tous les champs
+        </button>
+      }
+
       @if (erreur) { <div class="err">{{ erreur }}</div> }
 
       <div class="actions">
@@ -201,13 +208,17 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     <div class="cin resultat">
 
       <!-- Colonne gauche : verdict -->
-      <div class="carte verdict" [style.border-top]="'4px solid ' + couleur">
-        <div class="anneau" [style.background]="r.autorise ? 'rgba(31,157,67,.12)' : 'rgba(215,25,32,.1)'">
-          @if (r.autorise) {
-            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#1f9d43" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7.5 12.4 10.5 15.4 16.5 8.6"/></svg>
-          } @else {
-            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/><line x1="15.5" y1="8.5" x2="8.5" y2="15.5"/></svg>
-          }
+      <div class="carte verdict" [style.border-top]="'5px solid ' + couleur">
+        <div class="motif-points motif-haut"></div>
+        <div class="motif-points motif-bas"></div>
+        <div class="anneau-ext" [style.background]="r.autorise ? 'rgba(215,25,32,.1)' : 'rgba(215,25,32,.08)'">
+          <div class="anneau" [style.background]="couleur">
+            @if (r.autorise) {
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            } @else {
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            }
+          </div>
         </div>
         <div class="disp verdict-titre" [style.color]="couleur">
           {{ r.autorise ? tr.t('verif.autorise') : tr.t('verif.refuse') }}
@@ -215,10 +226,22 @@ import { TraductionService } from '../../core/traduction/traduction.service';
         <div class="verdict-sous">{{ r.message }}</div>
 
         <div class="fiche">
-          <div class="cell"><div class="cl">{{ tr.t('verif.client') }}</div><div class="cv">{{ form.nomClient }}</div></div>
-          <div class="cell"><div class="cl">{{ tr.t('verif.destination') }}</div><div class="cv">{{ form.paysDestination }}</div></div>
-          <div class="cell"><div class="cl">{{ tr.t('verif.naissance') }}</div><div class="cv">{{ form.dateNaissance }}</div></div>
-          <div class="cell"><div class="cl">{{ tr.t('verif.numeroPiece') }}</div><div class="cv">{{ form.numeroPiece }}</div></div>
+          <div class="cell">
+            <span class="cell-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <div><div class="cl">{{ tr.t('verif.client') }}</div><div class="cv">{{ form.nomClient }}</div></div>
+          </div>
+          <div class="cell">
+            <span class="cell-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <div><div class="cl">{{ tr.t('verif.destination') }}</div><div class="cv">{{ form.paysDestination }}</div></div>
+          </div>
+          <div class="cell">
+            <span class="cell-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            <div><div class="cl">{{ tr.t('verif.naissance') }}</div><div class="cv">{{ form.dateNaissance }}</div></div>
+          </div>
+          <div class="cell">
+            <span class="cell-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4M14 14h4"/></svg></span>
+            <div><div class="cl">{{ tr.t('verif.numeroPiece') }}</div><div class="cv">{{ form.numeroPiece }}</div></div>
+          </div>
         </div>
       </div>
 
@@ -269,13 +292,20 @@ import { TraductionService } from '../../core/traduction/traduction.service';
             <div class="consigne">
               {{ tr.t('verif.consigne') }}
             </div>
-            <input class="in ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
+            <div class="in-wrap">
+              <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+              <input class="in in-icone ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
+            </div>
             @if (erreurExec) { <div class="err">{{ erreurExec }}</div> }
             <div class="exec-actions">
               <button class="lift btn" (click)="executer()" [disabled]="chargement">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 {{ chargement ? tr.t('verif.envoiEnCours') : tr.t('verif.soumettre') }}
               </button>
-              <button class="navi btn-annuler" (click)="retour()">{{ tr.t('commun.annuler') }}</button>
+              <button class="navi btn-annuler" (click)="retour()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                {{ tr.t('commun.annuler') }}
+              </button>
             </div>
           </div>
         } @else {
@@ -286,19 +316,19 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   }
   `,
   styles: [`
-    .carte { background:#fff; border:1px solid var(--bordure); border-radius:18px; padding:26px 28px; box-shadow:0 4px 20px -12px rgba(0,0,0,.25); }
+    .carte { background:var(--surface); border:1px solid var(--bordure); border-radius:18px; padding:26px 28px; box-shadow:0 4px 20px -12px rgba(0,0,0,.25); }
 
     /* Étapes */
     .etapes { display:flex; align-items:center; padding:18px 28px; margin-bottom:20px; }
     .etape { display:flex; align-items:center; gap:10px; flex:none; }
-    .etape-rond { width:30px; height:30px; border-radius:50%; background:#f1f2f4; color:#8a8f97; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #e4e6ea; transition:background .2s, border-color .2s, color .2s; }
-    .etape-libelle { font-size:12.5px; font-weight:700; color:#8a8f97; white-space:nowrap; transition:color .2s; }
+    .etape-rond { width:30px; height:30px; border-radius:50%; background:var(--gris-clair); color:var(--gris-texte); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid var(--bordure); transition:background .2s, border-color .2s, color .2s; }
+    .etape-libelle { font-size:12.5px; font-weight:700; color:var(--gris-texte); white-space:nowrap; transition:color .2s; }
     .etape.active .etape-rond { background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); color:#fff; border-color:transparent; box-shadow:0 6px 14px -6px rgba(215,25,32,.6); }
     .etape.active .etape-libelle { color:var(--encre); }
-    .etape.fait .etape-rond { background:#1f9d43; color:#fff; border-color:transparent; }
-    .etape.fait .etape-libelle { color:#1f9d43; }
-    .etape-trait { flex:1; height:2px; background:#e4e6ea; margin:0 10px; min-width:20px; transition:background .2s; }
-    .etape-trait.fait { background:#1f9d43; }
+    .etape.fait .etape-rond { background:var(--vert); color:#fff; border-color:transparent; }
+    .etape.fait .etape-libelle { color:var(--vert); }
+    .etape-trait { flex:1; height:2px; background:var(--bordure); margin:0 10px; min-width:20px; transition:background .2s; }
+    .etape-trait.fait { background:var(--vert); }
     @media (max-width:640px) {
       .etape-libelle { display:none; }
       .etapes { padding:16px 18px; }
@@ -310,31 +340,31 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
     .champ { display:flex; flex-direction:column; gap:7px; }
     .in-wrap { position:relative; }
-    .in-ic { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#9aa0a8; display:flex; pointer-events:none; }
+    .in-ic { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--texte-faible); display:flex; pointer-events:none; }
     .in-icone { padding-left:38px; }
-    .in-err { border-color:var(--rouge) !important; background:#fff6f6; }
+    .in-err { border-color:var(--rouge) !important; background:var(--rouge-fond); }
     .montant { font-weight:700; letter-spacing:.5px; }
     .rapides { display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
-    .puce { border:1px solid #e0e3e8; background:#f7f8fa; color:#3a3d44; font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px; cursor:pointer; }
+    .puce { border:1px solid var(--bordure); background:var(--surface-2); color:var(--texte); font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px; cursor:pointer; }
     .puce:hover { border-color:var(--rouge); color:var(--rouge); }
 
     /* Volet d'auto-complétion clients connus */
     .champ-nom { position:relative; }
-    .volet { position:absolute; top:100%; left:0; right:0; z-index:30; margin-top:6px; background:#fff; border:1px solid var(--bordure); border-radius:13px; box-shadow:0 18px 40px -14px rgba(0,0,0,.35); overflow:hidden; }
+    .volet { position:absolute; top:100%; left:0; right:0; z-index:30; margin-top:6px; background:var(--surface); border:1px solid var(--bordure); border-radius:13px; box-shadow:0 18px 40px -14px rgba(0,0,0,.35); overflow:hidden; }
     .volet-titre { font-size:11px; font-weight:700; color:var(--gris); padding:10px 14px 7px; text-transform:uppercase; letter-spacing:.4px; }
-    .volet-item { display:flex; flex-direction:column; gap:2px; width:100%; text-align:left; background:none; border:none; border-top:1px solid #f1f2f4; padding:10px 14px; cursor:pointer; }
-    .volet-item:hover { background:#fdf3f3; }
+    .volet-item { display:flex; flex-direction:column; gap:2px; width:100%; text-align:left; background:none; border:none; border-top:1px solid var(--bordure); padding:10px 14px; cursor:pointer; }
+    .volet-item:hover { background:var(--rouge-fond); }
     .vi-nom { font-size:14px; font-weight:700; color:var(--encre); }
     .vi-infos { font-size:12px; color:var(--gris); }
 
     /* Récapitulatif */
     .recap-carte { max-width:640px; margin:0 auto; }
     .recap-tete { display:flex; align-items:flex-start; gap:14px; margin-bottom:22px; }
-    .recap-ic { width:52px; height:52px; flex:none; border-radius:14px; background:rgba(215,25,32,.08); display:flex; align-items:center; justify-content:center; }
+    .recap-ic { width:52px; height:52px; flex:none; border-radius:14px; background:var(--rouge-fond); display:flex; align-items:center; justify-content:center; }
     .recap-titre { font-size:20px; font-weight:700; letter-spacing:-.3px; }
     .recap-sous { font-size:13px; color:var(--gris); margin-top:4px; line-height:1.5; }
     .recap-grid { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
-    .rcell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
+    .rcell { background:var(--surface-2); border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
     .rcell .cv { word-break:break-word; }
     .montant-cell { background:#111318; border-color:#111318; }
     .montant-cell .cl { color:rgba(255,255,255,.5); }
@@ -343,11 +373,11 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .recap-actions { display:flex; gap:12px; margin-top:24px; }
     .recap-actions .btn { flex:1; padding:14px; }
     .succes-carte { max-width:520px; margin:0 auto; text-align:center; border-top:4px solid #1f9d43; }
-    .succes-anneau { width:76px; height:76px; margin:0 auto 18px; border-radius:50%; background:rgba(31,157,67,.1); display:flex; align-items:center; justify-content:center; }
+    .succes-anneau { width:76px; height:76px; margin:0 auto 18px; border-radius:50%; background:var(--vert-fond); display:flex; align-items:center; justify-content:center; }
     .succes-titre { font-size:20px; font-weight:800; letter-spacing:-.3px; }
     .succes-sous { font-size:13.5px; color:var(--gris); margin-top:8px; line-height:1.6; }
     .succes-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:26px; text-align:left; }
-    .scell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
+    .scell { background:var(--surface-2); border:1px solid var(--bordure); border-radius:12px; padding:12px 14px; }
     .scell .cv { word-break:break-word; }
     .scell .cv span { font-size:11.5px; color:var(--gris); font-weight:600; }
     .scell-ref { grid-column:1 / -1; background:#111318; border-color:#111318; }
@@ -355,40 +385,47 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .scell-ref .cv { color:#fff; font-size:18px; font-weight:800; letter-spacing:1px; font-family:'SFMono-Regular',Consolas,monospace; }
     .succes-actions { display:flex; flex-direction:column; gap:10px; margin-top:24px; }
     .succes-actions .btn { padding:14px; }
-    .btn-gris2 { border:1px solid #e4e6ea; cursor:pointer; padding:13px; border-radius:12px; font-size:13.5px; font-weight:700; color:var(--encre); background:#fff; }
-    .btn-modifier { flex:none; border:1px solid #e4e6ea; cursor:pointer; padding:14px 22px; border-radius:13px; font-size:14px; font-weight:700; color:#3a3d44; background:#fff; }
-    .btn-modifier:hover { border-color:#c9ccd2; }
-    label { font-size:12.5px; font-weight:700; color:#3a3d44; }
+    .btn-gris2 { border:1px solid var(--bordure); cursor:pointer; padding:13px; border-radius:12px; font-size:13.5px; font-weight:700; color:var(--encre); background:var(--surface); }
+    .btn-modifier { flex:none; border:1px solid var(--bordure); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:14px; font-weight:700; color:var(--texte); background:var(--surface); }
+    .btn-modifier:hover { border-color:var(--gris-bordure); }
+    label { font-size:12.5px; font-weight:700; color:var(--texte); }
     .rouge { color:var(--rouge); }
-    .upload { display:flex; align-items:center; gap:14px; margin-top:22px; padding:15px 17px; border-radius:14px; background:#f7f8fa; border:1px dashed #d7dae0; }
-    .upic { flex:none; width:50px; height:50px; border-radius:12px; background:#fff; border:1px solid #e4e6ea; display:flex; align-items:center; justify-content:center; }
+    .upload { display:flex; align-items:center; gap:14px; margin-top:22px; padding:15px 17px; border-radius:14px; background:var(--surface-2); border:1px dashed var(--bordure); }
+    .upic { flex:none; width:50px; height:50px; border-radius:12px; background:var(--surface); border:1px solid var(--bordure); display:flex; align-items:center; justify-content:center; }
     .upload-texte { flex:1; min-width:0; }
     .ut { font-size:13px; font-weight:700; color:var(--encre); }
     .us { font-size:11.5px; color:var(--gris); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .btn-parcourir { flex:none; display:flex; align-items:center; gap:7px; border:1px solid #f3c8ca; background:#fff; color:var(--rouge); cursor:pointer; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
-    .btn-parcourir:hover { background:#fdf3f3; }
+    .btn-parcourir { flex:none; display:flex; align-items:center; gap:7px; border:1px solid rgba(215,25,32,.3); background:var(--surface); color:var(--rouge); cursor:pointer; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
+    .btn-parcourir:hover { background:var(--rouge-fond); }
+    .barre-effacer { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:18px; padding:12px; border:1.5px dashed rgba(215,25,32,.35); border-radius:12px; background:var(--rouge-fond); color:var(--rouge); font-size:12.5px; font-weight:700; cursor:pointer; }
+    .barre-effacer:hover { background:rgba(215,25,32,.18); border-color:var(--rouge); }
     .err { margin-top:15px; text-align:center; color:var(--rouge); font-size:13px; font-weight:700; }
     .actions { display:flex; justify-content:flex-end; gap:12px; margin-top:22px; }
-    .btn-annuler-form { display:flex; align-items:center; gap:8px; border:1px solid #e4e6ea; background:#fff; color:var(--encre); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:13.5px; font-weight:700; }
-    .btn-annuler-form:hover { border-color:#c9ccd2; background:#f7f8fa; }
+    .btn-annuler-form { display:flex; align-items:center; gap:8px; border:1px solid var(--bordure); background:var(--surface); color:var(--encre); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:13.5px; font-weight:700; }
+    .btn-annuler-form:hover { border-color:var(--gris-bordure); background:var(--gris-clair); }
     .btn { border:none; cursor:pointer; padding:14px 38px; border-radius:13px; font-size:14.5px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); box-shadow:0 14px 30px -12px rgba(215,25,32,.8); }
     .btn:disabled { opacity:.7; cursor:default; }
 
     /* Résultat */
     .resultat { display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:start; }
-    .verdict { text-align:center; }
-    .anneau { width:88px; height:88px; margin:0 auto; border-radius:50%; display:flex; align-items:center; justify-content:center; }
-    .verdict-titre { margin-top:16px; font-size:19px; font-weight:700; }
-    .verdict-sous { margin-top:6px; font-size:13.5px; color:var(--gris); line-height:1.5; }
-    .fiche { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; text-align:left; }
-    .cell { background:#f7f8fa; border:1px solid var(--bordure); border-radius:12px; padding:11px 13px; }
-    .cl { font-size:10.5px; color:#8a8f97; font-weight:700; letter-spacing:.4px; }
+    .verdict { position:relative; text-align:center; overflow:hidden; }
+    .motif-points { position:absolute; width:110px; height:110px; pointer-events:none; background-image:radial-gradient(rgba(215,25,32,.15) 1.6px, transparent 1.6px); background-size:12px 12px; }
+    .motif-haut { top:-10px; right:-10px; }
+    .motif-bas { bottom:-10px; left:-10px; }
+    .anneau-ext { position:relative; z-index:1; width:96px; height:96px; margin:0 auto; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .anneau { width:66px; height:66px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 22px -10px rgba(0,0,0,.4); }
+    .verdict-titre { position:relative; z-index:1; margin-top:16px; font-size:19px; font-weight:700; }
+    .verdict-sous { position:relative; z-index:1; margin-top:6px; font-size:13.5px; color:var(--gris); line-height:1.5; }
+    .fiche { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; text-align:left; }
+    .cell { display:flex; align-items:flex-start; gap:10px; background:var(--surface-2); border:1px solid var(--bordure); border-radius:12px; padding:11px 13px; }
+    .cell-ic { flex:none; width:28px; height:28px; border-radius:50%; background:var(--rouge-fond); color:var(--rouge); display:flex; align-items:center; justify-content:center; }
+    .cl { font-size:10.5px; color:var(--gris-texte); font-weight:700; letter-spacing:.4px; }
     .cv { font-size:13px; font-weight:700; margin-top:2px; color:var(--encre); }
     .colonne { display:flex; flex-direction:column; gap:16px; }
     .colonne .carte { padding:20px; }
-    .bloc-titre { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:#3a3d44; margin-bottom:13px; }
+    .bloc-titre { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; color:var(--texte); margin-bottom:13px; }
     .bloc-titre .rouge { font-size:15px; }
-    .dernier { display:flex; align-items:center; justify-content:space-between; background:#f7f8fa; border:1px solid var(--bordure); border-radius:13px; padding:13px 15px; }
+    .dernier { display:flex; align-items:center; justify-content:space-between; background:var(--surface-2); border:1px solid var(--bordure); border-radius:13px; padding:13px 15px; }
     .dnom { font-weight:700; font-size:14px; color:var(--encre); }
     .ddate { font-size:12px; color:var(--gris); }
     .dstatut { font-size:11.5px; color:var(--rouge); font-weight:700; margin-top:1px; }
@@ -408,12 +445,12 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .legende { display:flex; align-items:center; gap:7px; font-size:11.5px; color:rgba(255,255,255,.6); font-weight:600; }
     .carre { width:9px; height:9px; border-radius:3px; display:inline-block; }
     .pct { font-size:11.5px; font-weight:700; }
-    .consigne { font-size:12.5px; font-weight:600; color:#3a3d44; line-height:1.5; margin-bottom:12px; }
-    .ref { text-align:center; letter-spacing:2px; font-weight:600; border-color:var(--rouge) !important; }
+    .consigne { font-size:12.5px; font-weight:600; color:var(--texte); line-height:1.5; margin-bottom:12px; }
+    .ref { letter-spacing:1px; font-weight:600; border-color:var(--rouge) !important; }
     .exec-actions { display:flex; gap:12px; margin-top:15px; }
-    .exec-actions .btn { flex:1; padding:13px; }
-    .btn-annuler { flex:none; border:1px solid #e4e6ea; cursor:pointer; padding:13px 20px; border-radius:12px; font-size:14px; font-weight:600; color:#3a3d44; background:#fff; }
-    .btn-retour { border:1px solid #e4e6ea; cursor:pointer; padding:14px; border-radius:13px; font-size:14px; font-weight:700; color:var(--encre); background:#fff; }
+    .exec-actions .btn { flex:1; padding:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-annuler { flex:none; display:flex; align-items:center; gap:8px; border:1px solid var(--bordure); cursor:pointer; padding:13px 20px; border-radius:12px; font-size:14px; font-weight:600; color:var(--texte); background:var(--surface); }
+    .btn-retour { border:1px solid var(--bordure); cursor:pointer; padding:14px; border-radius:13px; font-size:14px; font-weight:700; color:var(--encre); background:var(--surface); }
   `]
 })
 export class VerificationComponent implements OnInit {
@@ -627,6 +664,22 @@ export class VerificationComponent implements OnInit {
     this.form = this.vide();
     this.montantSaisi = '';
     this.manquants = [];
+    this.erreur = '';
+    this.pieceFichier = '';
+  }
+
+  /** Un champ au moins a été saisi : affiche la barre « Effacer tous les champs ». */
+  formulaireRempli(): boolean {
+    const f = this.form;
+    return !!(f.nomClient.trim() || f.dateNaissance || f.naturePiece || f.numeroPiece.trim()
+      || this.montantSaisi || f.paysDestination || this.pieceFichier);
+  }
+
+  effacerFormulaire(): void {
+    this.form = this.vide();
+    this.montantSaisi = '';
+    this.manquants = [];
+    this.suggestions = [];
     this.erreur = '';
     this.pieceFichier = '';
   }

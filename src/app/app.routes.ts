@@ -80,10 +80,16 @@ export const routes: Routes = [
             data: { mode: 'justificatifs' }
           },
           {
-            path: 'bilan',
-            loadComponent: () =>
-              import('./pages/bilan/bilan.component').then(m => m.BilanComponent)
-          }
+           path: 'bilan',
+           loadComponent: () =>
+            import('./pages/bilan/bilan.component').then(m => m.BilanComponent)
+          },
+          {
+             path: 'details/:id',
+              loadComponent: () =>
+                 import('./pages/details/details.component').then(m => m.DetailsComponent)
+          },
+
         ]
       },
       {
@@ -168,7 +174,12 @@ export const routes: Routes = [
         path: 'profil',
         loadComponent: () =>
           import('./pages/profil/profil.component').then(m => m.ProfilComponent)
-      }
+      },
+      {
+        path: 'details/:id',
+        loadComponent: () =>
+          import('./pages/details/details.component').then(m => m.DetailsComponent)
+      },
     ]
   },
 

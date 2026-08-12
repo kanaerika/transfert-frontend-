@@ -6,7 +6,7 @@
 .layout{
   display:flex;
   height:100vh;
-  background:#f5f7fb;
+  background:var(--fond, #f5f7fb);
 }
 
 /* ================= SIDEBAR ================= */
@@ -302,7 +302,7 @@
   align-items:center;
   gap:18px;
   padding:16px 28px;
-  background:#fff;
+  background:var(--surface, #fff);
   border-bottom:1px solid var(--bordure, #eceef1);
   position:sticky;
   top:0;
@@ -316,16 +316,35 @@
   justify-content:center;
   width:38px;
   height:38px;
-  border:1px solid #e4e6ea;
+  border:1px solid var(--bordure, #e4e6ea);
   border-radius:10px;
-  background:#fff;
-  color:#3a3d44;
+  background:var(--surface, #fff);
+  color:var(--gris-texte, #3a3d44);
   cursor:pointer;
 }
 
 .hamburger:hover{
-  background:#f7f8fa;
-  border-color:#c9ccd2;
+  background:var(--gris-clair, #f7f8fa);
+  border-color:var(--gris-texte, #c9ccd2);
+}
+
+.bascule-theme{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:38px;
+  height:38px;
+  border:1px solid var(--bordure, #e4e6ea);
+  border-radius:10px;
+  background:var(--surface, #fff);
+  color:var(--gris-texte, #6b7078);
+  cursor:pointer;
+}
+
+.bascule-theme:hover{
+  background:var(--gris-clair, #f7f8fa);
+  color:var(--rouge-afb, #c1121f);
 }
 
 .barre-titres{
@@ -336,14 +355,14 @@
 .titre-section{
   font-size:19px;
   font-weight:700;
-  color:#16181d;
+  color:var(--texte, #16181d);
   letter-spacing:-.02em;
 }
 
 .soustitre-section{
   margin-top:2px;
   font-size:12.5px;
-  color:#6b7078;
+  color:var(--gris-texte, #6b7078);
   font-weight:500;
 }
 
@@ -359,16 +378,16 @@
   display:flex;
   align-items:center;
   gap:8px;
-  border:1px solid #e4e6ea;
+  border:1px solid var(--bordure, #e4e6ea);
   border-radius:10px;
   padding:6px 10px;
-  background:#fff;
+  background:var(--surface, #fff);
 }
 
 .taille-texte button{
   border:none;
-  background:#f1f2f4;
-  color:#3a3d44;
+  background:var(--gris-clair, #f1f2f4);
+  color:var(--gris-texte, #3a3d44);
   width:26px;
   height:26px;
   border-radius:7px;
@@ -379,7 +398,7 @@
 }
 
 .taille-texte button:hover:not(:disabled){
-  background:#c1121f;
+  background:var(--rouge-afb, #c1121f);
   color:#fff;
 }
 
@@ -393,7 +412,7 @@
   text-align:center;
   font-size:11.5px;
   font-weight:700;
-  color:#6b7078;
+  color:var(--gris-texte, #6b7078);
 }
 
 .contenu-page{

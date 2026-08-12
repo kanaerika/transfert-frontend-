@@ -5,7 +5,7 @@
 .retour{
     background:none;
     border:none;
-    color:#c1121f;
+    color:var(--rouge-afb);
     font-weight:600;
     cursor:pointer;
     padding:0;
@@ -18,16 +18,16 @@
 }
 
 .etat{
-    background:white;
+    background:var(--surface);
     border-radius:12px;
     padding:30px;
     text-align:center;
-    color:#777;
+    color:var(--gris-texte);
     box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
 .etat.erreur{
-    color:#c1121f;
+    color:var(--rouge-afb);
     font-weight:600;
 }
 
@@ -40,6 +40,7 @@
 
 .header h1{
     font-size:30px;
+    color:var(--texte);
 }
 
 .cards{
@@ -49,23 +50,23 @@
 }
 
 .card{
-    background:white;
+    background:var(--surface);
     padding:20px;
     border-radius:12px;
     box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
 .card h3{
-    color:#777;
+    color:var(--gris-texte);
     margin-bottom:10px;
 }
 
 .active{
-    color:green;
+    color:var(--vert);
     font-weight:bold;
 }
 
 .disabled{
-    color:red;
+    color:var(--rouge);
     font-weight:bold;
 }

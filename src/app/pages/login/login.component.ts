@@ -121,32 +121,32 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .carte-connexion {
       width:440px;
       max-width:100%;
-      background:#fff;
+      background:var(--surface);
       border-radius:22px;
       box-shadow:0 30px 70px -25px rgba(15,17,20,.5);
       padding:40px 40px 32px;
     }
 
-    .logo-carte { display:inline-flex; border-radius:14px; background:#fff; border:1px solid var(--bordure); padding:8px 12px; box-shadow:0 8px 18px -8px rgba(215,25,32,.35); margin-bottom:22px; }
+    .logo-carte { display:inline-flex; border-radius:14px; background:var(--surface); border:1px solid var(--bordure); padding:8px 12px; box-shadow:0 8px 18px -8px rgba(215,25,32,.35); margin-bottom:22px; }
     .logo-carte img { display:block; height:46px; width:auto; object-fit:contain; }
 
     .titre-carte { font-size:28px; font-weight:800; line-height:1.18; letter-spacing:-.4px; color:var(--encre); margin:0 0 10px; font-family:'Sora','Manrope',sans-serif; }
     .titre-carte .accent { color:var(--rouge); }
     .desc-carte { color:var(--gris); font-size:14px; line-height:1.6; margin:0 0 18px; max-width:360px; }
 
-    .badge-securise { display:inline-flex; align-items:center; gap:6px; background:#fbecec; color:var(--rouge-fonce); font-size:11.5px; font-weight:700; letter-spacing:.2px; padding:6px 12px; border-radius:100px; margin-bottom:24px; }
+    .badge-securise { display:inline-flex; align-items:center; gap:6px; background:var(--rouge-fond); color:var(--rouge-fonce); font-size:11.5px; font-weight:700; letter-spacing:.2px; padding:6px 12px; border-radius:100px; margin-bottom:24px; }
 
-    label { font-size:12.5px; font-weight:700; color:#3a3d44; display:block; margin-bottom:7px; }
+    label { font-size:12.5px; font-weight:700; color:var(--texte); display:block; margin-bottom:7px; }
     .m16 { margin-bottom:16px; } .m10 { margin-bottom:10px; }
 
     .fld .fin.avec-oeil { padding-right:42px; }
-    .oeil { position:absolute; right:10px; top:50%; transform:translateY(-50%); border:none; background:none; color:#9aa0a8; cursor:pointer; display:flex; padding:6px; border-radius:8px; }
-    .oeil:hover { color:var(--rouge); background:#fbecec; }
+    .oeil { position:absolute; right:10px; top:50%; transform:translateY(-50%); border:none; background:none; color:var(--texte-faible); cursor:pointer; display:flex; padding:6px; border-radius:8px; }
+    .oeil:hover { color:var(--rouge); background:var(--rouge-fond); }
 
     .ligne { display:flex; align-items:center; margin:6px 0 20px; }
-    .souvenir { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:500; color:#4a4d54; cursor:pointer; margin:0; }
+    .souvenir { display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:500; color:var(--gris-texte); cursor:pointer; margin:0; }
     .souvenir input { accent-color:var(--rouge); width:15px; height:15px; }
-    .err { text-align:center; color:var(--rouge); background:#fbecec; border-radius:10px; padding:10px; font-size:13px; font-weight:700; margin:0 0 16px; }
+    .err { text-align:center; color:var(--rouge); background:var(--rouge-fond); border-radius:10px; padding:10px; font-size:13px; font-weight:700; margin:0 0 16px; }
 
     .btn { width:100%; display:flex; align-items:center; justify-content:center; gap:10px; border:none; background:linear-gradient(135deg,var(--rouge),var(--rouge-fonce)); color:#fff; font-weight:700; font-size:15px; padding:15px; border-radius:14px; cursor:pointer; box-shadow:0 16px 32px -12px rgba(215,25,32,.85); }
     .btn:disabled { opacity:.75; cursor:default; }
@@ -157,7 +157,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .pied-carte a { font-size:12.5px; font-weight:700; color:var(--gris); }
     .pied-carte a:hover { color:var(--rouge); }
 
-    .copyright-carte { text-align:center; margin-top:16px; font-size:11.5px; color:#9aa0a8; }
+    .copyright-carte { text-align:center; margin-top:16px; font-size:11.5px; color:var(--texte-faible); }
 
     @media (max-width:640px){
       .page-photo {

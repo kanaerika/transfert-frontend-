@@ -13,12 +13,6 @@ export function imprimerBordereau(t: Transfert): void {
         <td class="v">${valeur ?? '—'}</td>
       </tr>`;
  
-  // QR code de vérification : contient les données clés de l'opération
-  const donneesQr = encodeURIComponent(
-    `TRANSFERT|REF:${t.referenceVerification ?? t.reference}|CLIENT:${t.nomClient}|MONTANT:${t.montant} FCFA` +
-    `|PAYS:${t.paysDestination}|DATE:${t.dateTransfert}|STATUT:${t.statut}`);
-  const urlQr = `https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${donneesQr}`;
-
   const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -32,9 +26,6 @@ export function imprimerBordereau(t: Transfert): void {
   .titre { font-size:21px; font-weight:800; letter-spacing:-.3px; }
   .sous { font-size:12px; color:#6b7280; margin-top:4px; }
   .ref { text-align:right; font-size:12px; color:#6b7280; }
-  .qr { text-align:center; }
-  .qr img { border:1px solid #e8eaee; border-radius:8px; padding:5px; background:#fff; }
-  .qr-legende { font-size:9.5px; color:#9aa1ab; margin-top:4px; }
   .ref b { display:block; font-size:16px; color:#d71920; margin-top:2px; }
   table { width:100%; border-collapse:collapse; margin-top:8px; }
   td { padding:11px 14px; border-bottom:1px solid #e8eaee; font-size:13.5px; }
@@ -46,9 +37,9 @@ export function imprimerBordereau(t: Transfert): void {
   .montant .v { color:#fff; font-size:17px; border:none; }
   .statut { display:inline-block; padding:3px 12px; border:1.5px solid #d71920;
             border-radius:20px; color:#d71920; font-size:11.5px; font-weight:700; }
-  .signatures { display:flex; gap:40px; margin-top:52px; }
-  .sig { flex:1; border-top:1.5px solid #1a1c20; padding-top:8px;
-         font-size:11.5px; color:#6b7280; text-align:center; }
+  .operateur { border-top:1.5px solid #1a1c20; margin-top:52px; padding-top:10px; text-align:center; }
+  .operateur-label { font-size:11px; color:#6b7280; text-transform:uppercase; letter-spacing:.4px; }
+  .operateur-val { font-size:13.5px; font-weight:700; margin-top:3px; }
   .pied { margin-top:36px; font-size:10.5px; color:#9aa1ab; text-align:center; }
   @media print { body { padding:20px; } }
 </style>
@@ -58,12 +49,8 @@ export function imprimerBordereau(t: Transfert): void {
     <div>
       <div class="titre">Bordereau de soumission</div>
       <div class="sous">Transfert international · ${t.canal ?? ''} · Agence ${t.agence ?? ''}</div>
-      <div class="ref" style="text-align:left; margin-top:10px;">Référence de vérification<b>${t.referenceVerification ?? t.reference ?? '—'}</b></div>
     </div>
-    <div class="qr">
-      <img src="${urlQr}" alt="QR code de vérification" width="110" height="110">
-      <div class="qr-legende">Scannez pour vérifier</div>
-    </div>
+    <div class="ref">Référence de vérification<b>${t.referenceVerification ?? t.reference ?? '—'}</b></div>
   </div>
  
   <table>
@@ -86,9 +73,9 @@ export function imprimerBordereau(t: Transfert): void {
     ${t.motif ? ligne('Motif', t.motif) : ''}
   </table>
  
-  <div class="signatures">
-    <div class="sig">Signature du client</div>
-    <div class="sig">Signature et cachet de l'agent</div>
+  <div class="operateur">
+    <div class="operateur-label">Opération réalisée par</div>
+    <div class="operateur-val">${t.agentNom ?? '—'} — Agence ${t.agence ?? ''} — ${String(t.dateTransfert ?? '')}</div>
   </div>
  
   <div class="pied">
