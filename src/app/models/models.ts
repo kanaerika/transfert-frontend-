@@ -43,6 +43,7 @@ export interface VerificationResponse {
     montant: number;
     statut: string;
   } | null;
+  transfertId?: number | null;
 }
  
 export interface Transfert {

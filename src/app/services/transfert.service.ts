@@ -24,8 +24,17 @@ export class TransfertService {
     return this.http.post<VerificationResponse>(`${this.api}/transferts/verification`, req);
   }
  
-  executer(req: VerificationRequest & { reference: string; canal: string }) {
+  executer(req: VerificationRequest & { reference: string; canal: string; transfertId?: number | null }) {
     return this.http.post<Transfert>(`${this.api}/transferts`, req);
+  }
+
+  nonClotures(q = '') {
+    return this.http.get<Transfert[]>(`${this.api}/transferts/non-clotures`,
+      { params: new HttpParams().set('q', q) });
+  }
+
+  cloturer(id: number, reference: string, canal: string) {
+    return this.http.patch<Transfert>(`${this.api}/transferts/${id}/cloture`, { reference, canal });
   }
  
   historique(q = '') {

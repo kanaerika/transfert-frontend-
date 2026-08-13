@@ -5,6 +5,7 @@ import { TransfertService } from '../../services/transfert.service';
 import { ClientConnu, Transfert, VerificationRequest, VerificationResponse } from '../../models/models';
 import { imprimerBordereau } from '../../core/bordereau';
 import { TraductionService } from '../../core/traduction/traduction.service';
+import { ToastService } from '../../core/ui/toast.service';
 
 @Component({
   selector: 'app-verification',
@@ -53,6 +54,15 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   <!-- ================= FORMULAIRE ================= -->
   @if (!resultat && !recap && !transfertExecute) {
     <div class="cin carte">
+
+      @if (formulaireRempli()) {
+        <div class="entete-form">
+          <button type="button" class="btn-effacer" (click)="effacerFormulaire()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+            Effacer tous les champs
+          </button>
+        </div>
+      }
 
       <div class="section-titre"><span class="section-num">01</span> {{ tr.t('verif.sectionIdentite') }}</div>
       <div class="grid">
@@ -124,10 +134,12 @@ import { TraductionService } from '../../core/traduction/traduction.service';
           <label>{{ tr.t('verif.labelPays') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-            <select class="in in-icone" [class.in-err]="manquants.includes('pays')" [(ngModel)]="form.paysDestination">
-              <option value="">{{ tr.t('verif.selectionnerPays') }}</option>
-              @for (p of pays; track p) { <option [value]="p">{{ p }}</option> }
-            </select>
+            <input class="in in-icone" [class.in-err]="manquants.includes('pays')" [(ngModel)]="form.paysDestination"
+                   list="liste-pays" autocomplete="off"
+                   placeholder="{{ tr.t('verif.selectionnerPays') }}" (keyup.enter)="verifier()">
+            <datalist id="liste-pays">
+              @for (p of pays; track p) { <option [value]="p"></option> }
+            </datalist>
           </div>
         </div>
       </div>
@@ -146,15 +158,6 @@ import { TraductionService } from '../../core/traduction/traduction.service';
           {{ tr.t('verif.parcourir') }}
         </button>
       </div>
-
-      @if (formulaireRempli()) {
-        <button type="button" class="barre-effacer" (click)="effacerFormulaire()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-          Effacer tous les champs
-        </button>
-      }
-
-      @if (erreur) { <div class="err">{{ erreur }}</div> }
 
       <div class="actions">
         <button class="navi btn-annuler-form" (click)="retour()">
@@ -189,8 +192,6 @@ import { TraductionService } from '../../core/traduction/traduction.service';
         <div class="rcell montant-cell"><div class="cl">{{ tr.t('verif.champMontant') }}</div><div class="cv gros">{{ fmt(form.montant) }} <span>FCFA</span></div></div>
         <div class="rcell"><div class="cl">{{ tr.t('verif.champPays') }}</div><div class="cv">{{ form.paysDestination }}</div></div>
       </div>
-
-      @if (erreur) { <div class="err">{{ erreur }}</div> }
 
       <div class="recap-actions">
         <button class="navi btn-modifier" (click)="modifier()" [disabled]="chargement">
@@ -296,7 +297,6 @@ import { TraductionService } from '../../core/traduction/traduction.service';
               <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
               <input class="in in-icone ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
             </div>
-            @if (erreurExec) { <div class="err">{{ erreurExec }}</div> }
             <div class="exec-actions">
               <button class="lift btn" (click)="executer()" [disabled]="chargement">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -397,9 +397,9 @@ import { TraductionService } from '../../core/traduction/traduction.service';
     .us { font-size:11.5px; color:var(--gris); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .btn-parcourir { flex:none; display:flex; align-items:center; gap:7px; border:1px solid rgba(215,25,32,.3); background:var(--surface); color:var(--rouge); cursor:pointer; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
     .btn-parcourir:hover { background:var(--rouge-fond); }
-    .barre-effacer { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; margin-top:18px; padding:12px; border:1.5px dashed rgba(215,25,32,.35); border-radius:12px; background:var(--rouge-fond); color:var(--rouge); font-size:12.5px; font-weight:700; cursor:pointer; }
-    .barre-effacer:hover { background:rgba(215,25,32,.18); border-color:var(--rouge); }
-    .err { margin-top:15px; text-align:center; color:var(--rouge); font-size:13px; font-weight:700; }
+    .entete-form { display:flex; justify-content:flex-end; margin-bottom:14px; }
+    .btn-effacer { display:flex; align-items:center; gap:7px; padding:8px 14px; border:1.5px solid rgba(215,25,32,.3); border-radius:10px; background:var(--rouge-fond); color:var(--rouge); font-size:12px; font-weight:700; cursor:pointer; }
+    .btn-effacer:hover { background:rgba(215,25,32,.18); border-color:var(--rouge); }
     .actions { display:flex; justify-content:flex-end; gap:12px; margin-top:22px; }
     .btn-annuler-form { display:flex; align-items:center; gap:8px; border:1px solid var(--bordure); background:var(--surface); color:var(--encre); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:13.5px; font-weight:700; }
     .btn-annuler-form:hover { border-color:var(--gris-bordure); background:var(--gris-clair); }
@@ -456,6 +456,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
 export class VerificationComponent implements OnInit {
   private transferts = inject(TransfertService);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
   tr = inject(TraductionService);
 
   natures: string[] = [];
@@ -471,8 +472,6 @@ export class VerificationComponent implements OnInit {
   resultat: VerificationResponse | null = null;
   reference = '';
   transfertExecute: Transfert | null = null;
-  erreur = '';
-  erreurExec = '';
   chargement = false;
   pieceFichier = '';
 
@@ -539,8 +538,15 @@ export class VerificationComponent implements OnInit {
     if (!/^[A-Za-z0-9]+$/.test(numero)) {
       return this.tr.t('verif.erreurPieceFormat');
     }
-    const min = nature === "Carte Nationale d'Identité" ? 8
-              : nature === 'Passeport' ? 7 : 6;
+    if (nature === "Carte Nationale d'Identité") {
+      const nouvelleCarte = /^[A-Za-z]{2}\d{8}$/.test(numero);
+      const ancienneCarte = /^\d{18}$/.test(numero);
+      if (!nouvelleCarte && !ancienneCarte) {
+        return this.tr.t('verif.erreurCniFormat');
+      }
+      return '';
+    }
+    const min = nature === 'Passeport' ? 7 : 6;
     if (numero.length < min) {
       return this.tr.t('verif.erreurPieceCourt', { nature, min });
     }
@@ -578,7 +584,7 @@ export class VerificationComponent implements OnInit {
       const erreurPiece = this.validerPiece(f.naturePiece, f.numeroPiece.trim());
       if (erreurPiece) {
         this.manquants.push('piece');
-        this.erreur = erreurPiece;
+        this.toast.erreur(erreurPiece);
         return;
       }
     }
@@ -586,27 +592,25 @@ export class VerificationComponent implements OnInit {
     if (!f.paysDestination)      { this.manquants.push('pays');    libelles.push(this.tr.t('verif.libellePays')); }
 
     if (libelles.length > 0) {
-      this.erreur = this.tr.t('verif.erreurRenseigner', { champs: libelles.join(', ') });
+      this.toast.erreur(this.tr.t('verif.erreurRenseigner', { champs: libelles.join(', ') }));
       return;
     }
-    this.erreur = '';
     this.recap = true; // → page de confirmation "Le formulaire est-il bien rempli ?"
   }
 
   /** L'agent confirme le récapitulatif → appel du backend. */
   valider(): void {
-    this.erreur = '';
     this.chargement = true;
     this.transferts.verifier(this.form).subscribe({
       next: res => { this.resultat = res; this.recap = false; this.chargement = false; },
       error: (err) => {
         this.chargement = false;
         if (err.status === 0) {
-          this.erreur = this.tr.t('verif.erreurServeur');
+          this.toast.erreur(this.tr.t('verif.erreurServeur'));
         } else if (err.status === 401 || err.status === 403) {
-          this.erreur = this.tr.t('verif.erreurSession');
+          this.toast.erreur(this.tr.t('verif.erreurSession'));
         } else {
-          this.erreur = err?.error?.message ?? this.tr.t('verif.erreurVerification', { code: err.status });
+          this.toast.erreur(err?.error?.message ?? this.tr.t('verif.erreurVerification', { code: err.status }));
         }
       }
     });
@@ -615,15 +619,13 @@ export class VerificationComponent implements OnInit {
   /** Retour au formulaire en conservant les valeurs saisies. */
   modifier(): void {
     this.recap = false;
-    this.erreur = '';
   }
 
   executer(): void {
     if (!this.reference.trim()) {
-      this.erreurExec = this.tr.t('verif.erreurReference');
+      this.toast.erreur(this.tr.t('verif.erreurReference'));
       return;
     }
-    this.erreurExec = '';
     this.chargement = true;
    this.transferts.executer({
   reference: this.reference,
@@ -633,7 +635,8 @@ export class VerificationComponent implements OnInit {
   numeroPiece: this.form.numeroPiece,
   montant: this.form.montant,
   paysDestination: this.form.paysDestination,
-  canal: localStorage.getItem('canal') ?? ''
+  canal: localStorage.getItem('canal') ?? '',
+  transfertId: this.resultat?.transfertId ?? null
 }).subscribe({
   next: t => {
     this.transfertExecute = t;
@@ -642,7 +645,7 @@ export class VerificationComponent implements OnInit {
     this.reference = '';
   },
   error: err => {
-    this.erreurExec = err?.error?.message ?? this.tr.t('verif.erreurExecution');
+    this.toast.erreur(err?.error?.message ?? this.tr.t('verif.erreurExecution'));
     this.chargement = false;
   }
 });
@@ -664,7 +667,6 @@ export class VerificationComponent implements OnInit {
     this.form = this.vide();
     this.montantSaisi = '';
     this.manquants = [];
-    this.erreur = '';
     this.pieceFichier = '';
   }
 
@@ -680,7 +682,6 @@ export class VerificationComponent implements OnInit {
     this.montantSaisi = '';
     this.manquants = [];
     this.suggestions = [];
-    this.erreur = '';
     this.pieceFichier = '';
   }
 

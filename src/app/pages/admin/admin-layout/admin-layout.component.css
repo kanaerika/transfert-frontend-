@@ -12,7 +12,7 @@
 /* ================= SIDEBAR ================= */
 
 .sidebar{
-  width:260px;
+  width:310px;
   background:#121418;
   color:white;
   display:flex;
@@ -131,14 +131,14 @@
 
 .content{
   flex:1;
-  margin-left:260px;
+  margin-left:310px;
   padding:35px;
   overflow:auto;
 }
 
 /* Identité visuelle plus présente dans la navigation */
 .sidebar{
-  width:272px;
+  width:310px;
   padding:22px 18px;
   background:linear-gradient(180deg, #101319 0%, #151922 100%);
   border-right:1px solid rgba(255,255,255,.05);
@@ -207,7 +207,7 @@
 }
 
 .content{
-  margin-left:272px;
+  margin-left:310px;
   padding:0;
   transition:margin-left .25s ease;
 }

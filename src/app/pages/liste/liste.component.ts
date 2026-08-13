@@ -5,8 +5,9 @@ import { TransfertService } from '../../services/transfert.service';
 import { Transfert } from '../../models/models';
 import { imprimerBordereau } from '../../core/bordereau';
 import { TraductionService } from '../../core/traduction/traduction.service';
+import { ToastService } from '../../core/ui/toast.service';
  
-type Mode = 'historique' | 'annulation' | 'justificatifs';
+type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
  
 @Component({
   selector: 'app-liste',
@@ -24,9 +25,7 @@ type Mode = 'historique' | 'annulation' | 'justificatifs';
       <button class="lift btn" (click)="charger()">Rechercher</button>
     </div>
  
-    @if (erreur) { <div class="err">{{ erreur }}</div> }
- 
-    @if (!erreur && transferts.length === 0) {
+    @if (transferts.length === 0) {
       <div class="vide">Aucun transfert à afficher.</div>
     }
  
@@ -70,6 +69,9 @@ type Mode = 'historique' | 'annulation' | 'justificatifs';
                   <button class="navi lien lien-danger" (click)="ouvrirMotif(t, 'annulation')">Annuler</button>
                   <button class="navi lien lien-danger" (click)="ouvrirMotif(t, 'rejet')">Rejeter</button>
                 }
+                @if (mode === 'non-cloture') {
+                  <button class="navi lien lien-danger" (click)="ouvrirCloture(t)">Clôturer</button>
+                }
               </div></td>
             </tr>
           }
@@ -108,6 +110,43 @@ type Mode = 'historique' | 'annulation' | 'justificatifs';
             <button class="lift btn btn-confirm" [disabled]="motif.trim().length < 10 || envoi"
                     (click)="confirmer()">
               {{ envoi ? 'Envoi…' : (action === 'annulation' ? "Confirmer l'annulation" : 'Confirmer le rejet') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Popup de clôture d'un transfert non clôturé -->
+    @if (cibleCloture; as cc) {
+      <div class="voile" (click)="fermerCloture()">
+        <div class="popup" (click)="$event.stopPropagation()">
+          <div class="popup-tete">
+            <div class="popup-titre">Clôturer ce transfert</div>
+            <button class="popup-x" (click)="fermerCloture()">✕</button>
+          </div>
+
+          <div class="popup-resume">
+            <div class="pr-ligne"><span>Client</span><b>{{ cc.nomClient }}</b></div>
+            <div class="pr-ligne"><span>Montant</span><b>{{ fmt(cc.montant) }} FCFA</b></div>
+            <div class="pr-ligne"><span>Destination</span><b>{{ cc.paysDestination }}</b></div>
+          </div>
+
+          <label class="popup-label">Référence de la plateforme externe <span class="oblig">— obligatoire</span></label>
+          <input class="in" [(ngModel)]="referenceCloture" placeholder="Référence saisie sur la plateforme…">
+
+          <label class="popup-label" style="margin-top:14px;">Canal</label>
+          <select class="in" [(ngModel)]="canalCloture">
+            <option value="">{{ cc.canal || 'Non précisé' }}</option>
+            @for (c of canaux; track c.nom) { <option [value]="c.nom">{{ c.nom }}</option> }
+          </select>
+
+          @if (erreurCloture) { <div class="err">{{ erreurCloture }}</div> }
+
+          <div class="popup-actions">
+            <button class="navi btn-gris" (click)="fermerCloture()">Retour</button>
+            <button class="lift btn btn-confirm" [disabled]="!referenceCloture.trim() || envoi"
+                    (click)="confirmerCloture()">
+              {{ envoi ? 'Envoi…' : 'Confirmer la clôture' }}
             </button>
           </div>
         </div>
@@ -218,33 +257,70 @@ type Mode = 'historique' | 'annulation' | 'justificatifs';
 export class ListeComponent implements OnInit {
   private transferts_ = inject(TransfertService);
   private route = inject(ActivatedRoute);
- 
+  private toast = inject(ToastService);
+
   mode: Mode = 'historique';
   transferts: Transfert[] = [];
   recherche = '';
-  erreur = '';
   cible: Transfert | null = null;
   detailsCible: Transfert | null = null;
   action: 'annulation' | 'rejet' = 'annulation';
   motif = '';
   erreurMotif = '';
   envoi = false;
- 
+
+  canaux: { nom: string; description: string }[] = [];
+  cibleCloture: Transfert | null = null;
+  referenceCloture = '';
+  canalCloture = '';
+  erreurCloture = '';
+
   ngOnInit(): void {
     this.mode = (this.route.snapshot.data['mode'] as Mode) ?? 'historique';
+    this.transferts_.referentiel().subscribe({ next: ref => this.canaux = ref.canaux, error: () => {} });
     this.charger();
   }
- 
+
   charger(): void {
-    this.erreur = '';
-    const flux = this.mode === 'annulation'
-      ? this.transferts_.annulables(this.recherche)
+    const flux = this.mode === 'annulation' ? this.transferts_.annulables(this.recherche)
+      : this.mode === 'non-cloture' ? this.transferts_.nonClotures(this.recherche)
       : this.transferts_.historique(this.recherche);
- 
+
     flux.subscribe({
       next: liste => { this.transferts = liste; },
-      error: () => { this.erreur = 'Erreur lors du chargement des transferts.'; }
+      error: () => this.toast.erreur('Erreur lors du chargement des transferts.')
     });
+  }
+
+  ouvrirCloture(t: Transfert): void {
+    this.cibleCloture = t;
+    this.referenceCloture = '';
+    this.canalCloture = '';
+    this.erreurCloture = '';
+  }
+
+  fermerCloture(): void {
+    this.cibleCloture = null;
+    this.referenceCloture = '';
+    this.erreurCloture = '';
+  }
+
+  confirmerCloture(): void {
+    if (!this.cibleCloture) return;
+    if (!this.referenceCloture.trim()) {
+      this.erreurCloture = 'La référence est obligatoire.';
+      return;
+    }
+    this.envoi = true;
+    this.erreurCloture = '';
+    this.transferts_.cloturer(this.cibleCloture.id, this.referenceCloture.trim(), this.canalCloture)
+      .subscribe({
+        next: () => { this.envoi = false; this.fermerCloture(); this.charger(); },
+        error: err => {
+          this.envoi = false;
+          this.erreurCloture = err?.error?.message ?? "Impossible de clôturer ce transfert.";
+        }
+      });
   }
  
   voirDetails(t: Transfert): void {
@@ -310,7 +386,7 @@ export class ListeComponent implements OnInit {
     if (s.includes('exécut')) return 'pill st-ok';
     if (s.includes('rejet')) return 'pill st-rej';
     if (s.includes('annul')) return 'pill st-ann';
-    if (s.includes('attente') || s.includes('justificatif')) return 'pill st-attente';
+    if (s.includes('attente') || s.includes('justificatif') || s.includes('clôtur')) return 'pill st-attente';
     return 'pill st-ann';
   }
 }
