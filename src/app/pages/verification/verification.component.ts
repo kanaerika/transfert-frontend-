@@ -408,7 +408,7 @@ import { ToastService } from '../../core/ui/toast.service';
 
     /* Résultat */
     .resultat { display:grid; grid-template-columns:1.05fr .95fr; gap:20px; align-items:start; }
-    .verdict { position:relative; text-align:center; overflow:hidden; }
+    .verdict { position:relative; text-align:center; overflow:hidden; padding-bottom:34px; }
     .motif-points { position:absolute; width:110px; height:110px; pointer-events:none; background-image:radial-gradient(rgba(215,25,32,.15) 1.6px, transparent 1.6px); background-size:12px 12px; }
     .motif-haut { top:-10px; right:-10px; }
     .motif-bas { bottom:-10px; left:-10px; }
