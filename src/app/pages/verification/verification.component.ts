@@ -67,10 +67,10 @@ import { ToastService } from '../../core/ui/toast.service';
       <div class="section-titre"><span class="section-num">01</span> {{ tr.t('verif.sectionIdentite') }}</div>
       <div class="grid">
         <div class="champ champ-nom">
-          <label>{{ tr.t('verif.labelNom') }} <span class="rouge">{{ tr.t('verif.labelNomSuffixe') }}</span></label>
+          <label for="champ-nom-verif">{{ tr.t('verif.labelNom') }} <span class="rouge">{{ tr.t('verif.labelNomSuffixe') }}</span></label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>
-            <input class="in in-icone" [class.in-err]="manquants.includes('nom')" [ngModel]="form.nomClient"
+            <input id="champ-nom-verif" class="in in-icone" [class.in-err]="manquants.includes('nom')" [ngModel]="form.nomClient"
                    (ngModelChange)="saisirNom($event)" autocomplete="off"
                    placeholder="{{ tr.t('verif.placeholderNom') }}" (keyup.enter)="verifier()"
                    (blur)="fermerSuggestionsBientot()">
@@ -89,26 +89,26 @@ import { ToastService } from '../../core/ui/toast.service';
           }
         </div>
         <div class="champ">
-          <label>{{ tr.t('verif.labelDateNaissance') }}</label>
+          <label for="champ-date-naissance-verif">{{ tr.t('verif.labelDateNaissance') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span>
-            <input class="in in-icone" [class.in-err]="manquants.includes('date')" [ngModel]="form.dateNaissance"
+            <input id="champ-date-naissance-verif" class="in in-icone" [class.in-err]="manquants.includes('date')" [ngModel]="form.dateNaissance"
                    (ngModelChange)="formaterDate($event)" inputmode="numeric" maxlength="10"
                    placeholder="{{ tr.t('verif.placeholderDate') }}" (keyup.enter)="verifier()">
           </div>
         </div>
         <div class="champ">
-          <label>{{ tr.t('verif.labelNature') }}</label>
-          <select class="in" [class.in-err]="manquants.includes('nature')" [(ngModel)]="form.naturePiece">
+          <label for="champ-nature-verif">{{ tr.t('verif.labelNature') }}</label>
+          <select id="champ-nature-verif" class="in" [class.in-err]="manquants.includes('nature')" [(ngModel)]="form.naturePiece">
             <option value="">{{ tr.t('commun.selectionner') }}</option>
             @for (n of natures; track n) { <option [value]="n">{{ n }}</option> }
           </select>
         </div>
         <div class="champ">
-          <label>{{ tr.t('verif.labelNumeroPiece') }}</label>
+          <label for="champ-numero-piece-verif">{{ tr.t('verif.labelNumeroPiece') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4M14 14h4"/></svg></span>
-            <input class="in in-icone" [class.in-err]="manquants.includes('piece')" [(ngModel)]="form.numeroPiece"
+            <input id="champ-numero-piece-verif" class="in in-icone" [class.in-err]="manquants.includes('piece')" [(ngModel)]="form.numeroPiece"
                    placeholder="{{ tr.t('verif.placeholderNumero') }}" (keyup.enter)="verifier()">
           </div>
         </div>
@@ -117,10 +117,10 @@ import { ToastService } from '../../core/ui/toast.service';
       <div class="section-titre section-titre-espace"><span class="section-num">02</span> {{ tr.t('verif.sectionDetails') }}</div>
       <div class="grid">
         <div class="champ">
-          <label>{{ tr.t('verif.labelMontant') }}</label>
+          <label for="champ-montant-verif">{{ tr.t('verif.labelMontant') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-            <input class="in in-icone montant" [class.in-err]="manquants.includes('montant')" [ngModel]="montantSaisi"
+            <input id="champ-montant-verif" class="in in-icone montant" [class.in-err]="manquants.includes('montant')" [ngModel]="montantSaisi"
                    (ngModelChange)="formaterMontant($event)" inputmode="numeric"
                    placeholder="{{ tr.t('verif.placeholderMontant') }}" (keyup.enter)="verifier()">
           </div>
@@ -131,10 +131,10 @@ import { ToastService } from '../../core/ui/toast.service';
           </div>
         </div>
         <div class="champ">
-          <label>{{ tr.t('verif.labelPays') }}</label>
+          <label for="champ-pays-verif">{{ tr.t('verif.labelPays') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-            <input class="in in-icone" [class.in-err]="manquants.includes('pays')" [(ngModel)]="form.paysDestination"
+            <input id="champ-pays-verif" class="in in-icone" [class.in-err]="manquants.includes('pays')" [(ngModel)]="form.paysDestination"
                    list="liste-pays" autocomplete="off"
                    placeholder="{{ tr.t('verif.selectionnerPays') }}" (keyup.enter)="verifier()">
             <datalist id="liste-pays">
@@ -280,7 +280,8 @@ import { ToastService } from '../../core/ui/toast.service';
             </div>
             <div class="in-wrap">
               <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-              <input class="in in-icone ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
+              <label for="champ-reference-execution" class="sr-only">{{ tr.t('verif.placeholderRef') }}</label>
+              <input id="champ-reference-execution" class="in in-icone ref" [(ngModel)]="reference" placeholder="{{ tr.t('verif.placeholderRef') }}">
             </div>
             <div class="exec-actions">
               <button class="lift btn" (click)="executer()" [disabled]="chargement">
@@ -374,6 +375,7 @@ import { ToastService } from '../../core/ui/toast.service';
     .btn-modifier { flex:none; border:1px solid var(--bordure); cursor:pointer; padding:14px 22px; border-radius:13px; font-size:14px; font-weight:700; color:var(--texte); background:var(--surface); }
     .btn-modifier:hover { border-color:var(--gris-bordure); }
     label { font-size:12.5px; font-weight:700; color:var(--texte); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     .rouge { color:var(--rouge); }
     .entete-form { display:flex; justify-content:flex-end; margin-bottom:14px; }
     .btn-effacer { display:flex; align-items:center; gap:7px; padding:8px 14px; border:1.5px solid rgba(215,25,32,.3); border-radius:10px; background:var(--rouge-fond); color:var(--rouge); font-size:12px; font-weight:700; cursor:pointer; }
@@ -546,7 +548,7 @@ export class VerificationComponent implements OnInit {
   }
 
   verifier(): void {
-    this.form.montant = parseInt(this.montantSaisi.replace(/\D/g, ''), 10) || 0;
+    this.form.montant = Number.parseInt(this.montantSaisi.replace(/\D/g, ''), 10) || 0;
     const f = this.form;
 
     // Validation précise : chaque champ manquant est nommé et encadré en rouge

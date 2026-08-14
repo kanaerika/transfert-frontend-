@@ -153,8 +153,8 @@ interface InfoStatut {
           <button class="popup-x" (click)="fermerCloture()">✕</button>
         </div>
 
-        <label class="popup-label">Motif {{ action === 'annulation' ? "de l'annulation" : 'du rejet' }} <span class="oblig">— obligatoire</span></label>
-        <textarea class="in motif-zone" [(ngModel)]="motif" rows="3"
+        <label for="motif-cloture-transfert" class="popup-label">Motif {{ action === 'annulation' ? "de l'annulation" : 'du rejet' }} <span class="oblig">— obligatoire</span></label>
+        <textarea id="motif-cloture-transfert" class="in motif-zone" [(ngModel)]="motif" rows="3"
                   placeholder="Expliquez pourquoi cette opération est {{ action === 'annulation' ? 'annulée' : 'rejetée' }} (au moins 10 caractères)…"></textarea>
         <div class="motif-compteur" [class.ok]="motif.trim().length >= 10">
           {{ motif.trim().length >= 10 ? '✓ Motif valide' : motif.trim().length + '/10 caractères minimum' }}

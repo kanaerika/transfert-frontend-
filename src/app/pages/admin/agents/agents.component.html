@@ -22,7 +22,9 @@
     <!-- Recherche -->
     <div class="barre-recherche">
       <span class="loupe"></span>
+      <label for="recherche-agents" class="sr-only">Rechercher un agent</label>
       <input
+        id="recherche-agents"
         type="text"
         placeholder="Rechercher par nom, email ou agence…"
         [ngModel]="recherche()"
@@ -117,13 +119,14 @@
 
       <div class="modal-corps">
         <div class="champ">
-          <label>Nom complet *</label>
-          <input type="text" [(ngModel)]="agent.nomComplet" placeholder="Ex. Jean Kamga">
+          <label for="champ-nom-complet">Nom complet *</label>
+          <input id="champ-nom-complet" type="text" [(ngModel)]="agent.nomComplet" placeholder="Ex. Jean Kamga">
         </div>
 
         <div class="champ">
-          <label>Email *</label>
+          <label for="champ-email">Email *</label>
           <input
+            id="champ-email"
             type="email"
             [(ngModel)]="agent.email"
             [disabled]="edition()"
@@ -135,12 +138,12 @@
 
         <div class="grille-2">
           <div class="champ">
-            <label>Agence</label>
-            <input type="text" [(ngModel)]="agent.agence" placeholder="Ex. Douala Centre">
+            <label for="champ-agence">Agence</label>
+            <input id="champ-agence" type="text" [(ngModel)]="agent.agence" placeholder="Ex. Douala Centre">
           </div>
           <div class="champ">
-            <label>Code agent</label>
-            <input type="text" [(ngModel)]="agent.codeAgent" placeholder="Ex. AG042">
+            <label for="champ-code-agent">Code agent</label>
+            <input id="champ-code-agent" type="text" [(ngModel)]="agent.codeAgent" placeholder="Ex. AG042">
           </div>
         </div>
 

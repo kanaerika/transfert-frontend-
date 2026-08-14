@@ -27,7 +27,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
         {{ tr.t('login.accesSecurise') }}
       </div>
 
-      <label>{{ tr.t('login.email') }}</label>
+      <label for="champ-email-connexion">{{ tr.t('login.email') }}</label>
 
         <div class="fld m16">
           <span class="ic">
@@ -45,6 +45,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
           </span>
 
           <input
+            id="champ-email-connexion"
             class="fin"
             [(ngModel)]="email"
             type="email"
@@ -52,12 +53,13 @@ import { TraductionService } from '../../core/traduction/traduction.service';
             placeholder="nom@entreprise.com">
         </div>
 
-        <label>{{ tr.t('login.mdp') }}</label>
+        <label for="champ-mdp-connexion">{{ tr.t('login.mdp') }}</label>
         <div class="fld m10">
           <span class="ic">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           </span>
           <input
+            id="champ-mdp-connexion"
             class="fin avec-oeil"
             [(ngModel)]="motDePasse"
             [type]="mdpVisible ? 'text' : 'password'"

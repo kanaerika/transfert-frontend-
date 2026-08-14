@@ -20,7 +20,8 @@ type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
         <span class="ic">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </span>
-        <input class="fin" [(ngModel)]="recherche" (keyup.enter)="charger()" placeholder="Rechercher un client, une référence…">
+        <label for="recherche-liste" class="sr-only">Rechercher un client, une référence</label>
+        <input id="recherche-liste" class="fin" [(ngModel)]="recherche" (keyup.enter)="charger()" placeholder="Rechercher un client, une référence…">
       </div>
       <button class="lift btn" (click)="charger()">Rechercher</button>
     </div>
@@ -97,8 +98,8 @@ type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
             <div class="pr-ligne"><span>Référence</span><b>{{ cible.reference }}</b></div>
           </div>
  
-          <label class="popup-label">Motif de {{ action === 'annulation' ? "l'annulation" : 'du rejet' }} <span class="oblig">— obligatoire</span></label>
-          <textarea class="in motif-zone" [(ngModel)]="motif" rows="3"
+          <label for="motif-annulation-rejet" class="popup-label">Motif de {{ action === 'annulation' ? "l'annulation" : 'du rejet' }} <span class="oblig">— obligatoire</span></label>
+          <textarea id="motif-annulation-rejet" class="in motif-zone" [(ngModel)]="motif" rows="3"
                     placeholder="Expliquez pourquoi cette opération est {{ action === 'annulation' ? 'annulée' : 'rejetée' }} (au moins 10 caractères)…"></textarea>
           <div class="motif-compteur" [class.ok]="motif.trim().length >= 10">
             {{ motif.trim().length >= 10 ? '✓ Motif valide' : motif.trim().length + '/10 caractères minimum' }}
@@ -131,11 +132,11 @@ type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
             <div class="pr-ligne"><span>Destination</span><b>{{ cc.paysDestination }}</b></div>
           </div>
 
-          <label class="popup-label">Référence de la plateforme externe <span class="oblig">— obligatoire</span></label>
-          <input class="in" [(ngModel)]="referenceCloture" placeholder="Référence saisie sur la plateforme…">
+          <label for="reference-cloture" class="popup-label">Référence de la plateforme externe <span class="oblig">— obligatoire</span></label>
+          <input id="reference-cloture" class="in" [(ngModel)]="referenceCloture" placeholder="Référence saisie sur la plateforme…">
 
-          <label class="popup-label" style="margin-top:14px;">Canal</label>
-          <select class="in" [(ngModel)]="canalCloture">
+          <label for="canal-cloture" class="popup-label" style="margin-top:14px;">Canal</label>
+          <select id="canal-cloture" class="in" [(ngModel)]="canalCloture">
             <option value="">{{ cc.canal || 'Non précisé' }}</option>
             @for (c of canaux; track c.nom) { <option [value]="c.nom">{{ c.nom }}</option> }
           </select>
@@ -252,6 +253,7 @@ type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
     .motif-compteur.ok { color:var(--vert); }
     .motif-actions { display:flex; gap:12px; justify-content:flex-end; margin-top:14px; }
     .btn-gris { border:1px solid var(--bordure); cursor:pointer; padding:11px 20px; border-radius:12px; font-size:13px; font-weight:700; color:var(--encre); background:var(--surface); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   `]
 })
 export class ListeComponent implements OnInit {

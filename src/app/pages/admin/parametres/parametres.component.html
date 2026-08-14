@@ -29,16 +29,16 @@
         </div>
 
         <div class="champ">
-          <label>Nom complet</label>
-          <input type="text" [(ngModel)]="formProfil.nomComplet">
+          <label for="champ-nom-complet-profil">Nom complet</label>
+          <input id="champ-nom-complet-profil" type="text" [(ngModel)]="formProfil.nomComplet">
         </div>
         <div class="champ">
-          <label>Agence</label>
-          <input type="text" [(ngModel)]="formProfil.agence">
+          <label for="champ-agence-profil">Agence</label>
+          <input id="champ-agence-profil" type="text" [(ngModel)]="formProfil.agence">
         </div>
         <div class="champ champ-lecture">
-          <label>Email</label>
-          <input type="email" [(ngModel)]="formProfil.email" autocomplete="email">
+          <label for="champ-email-profil">Email</label>
+          <input id="champ-email-profil" type="email" [(ngModel)]="formProfil.email" autocomplete="email">
           <small>Votre adresse email est utilisée pour vous connecter.</small>
         </div>
         <div class="pied">
@@ -53,17 +53,17 @@
       @if (onglet() === 'securite') {
         <h2>Changer le mot de passe</h2>
         <div class="champ">
-          <label>Mot de passe actuel</label>
-          <input type="password" [(ngModel)]="mdp.ancien" autocomplete="current-password">
+          <label for="champ-mdp-actuel">Mot de passe actuel</label>
+          <input id="champ-mdp-actuel" type="password" [(ngModel)]="mdp.ancien" autocomplete="current-password">
         </div>
         <div class="champ">
-          <label>Nouveau mot de passe</label>
-          <input type="password" [(ngModel)]="mdp.nouveau" autocomplete="new-password">
+          <label for="champ-mdp-nouveau">Nouveau mot de passe</label>
+          <input id="champ-mdp-nouveau" type="password" [(ngModel)]="mdp.nouveau" autocomplete="new-password">
           <small>Au moins 8 caractères, une lettre et un chiffre.</small>
         </div>
         <div class="champ">
-          <label>Confirmer</label>
-          <input type="password" [(ngModel)]="mdp.confirmation" autocomplete="new-password"
+          <label for="champ-mdp-confirmation">Confirmer</label>
+          <input id="champ-mdp-confirmation" type="password" [(ngModel)]="mdp.confirmation" autocomplete="new-password"
                  [class.invalide]="correspondance() === false">
           @if (correspondance() === false) {
             <small class="err">Les mots de passe ne correspondent pas.</small>
@@ -96,8 +96,8 @@
         }
 
         <div class="champ">
-          <label>Nouveau plafond (FCFA)</label>
-          <input type="number" min="1" step="1000"
+          <label for="champ-plafond">Nouveau plafond (FCFA)</label>
+          <input id="champ-plafond" type="number" min="1" step="1000"
                  [ngModel]="plafondSaisi()" (ngModelChange)="plafondSaisi.set($event)">
           <small>Saisissez le montant en francs CFA, sans espaces.</small>
         </div>

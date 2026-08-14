@@ -16,10 +16,13 @@ import { Partenaire } from '../../models/models';
     <p class="aide">Le partenaire recevra une invitation par email : son administrateur
        activera lui-même son compte en choisissant son mot de passe.</p>
     <div class="form-grid">
-      <input class="in" [(ngModel)]="form.nom" placeholder="Nom du partenaire (ex : Express Union)">
-      <input class="in" [(ngModel)]="form.email" type="email" placeholder="Email de l'administrateur">
+      <label for="partenaire-nom-form" class="sr-only">Nom du partenaire</label>
+      <input id="partenaire-nom-form" class="in" [(ngModel)]="form.nom" placeholder="Nom du partenaire (ex : Express Union)">
+      <label for="partenaire-email-form" class="sr-only">Email de l'administrateur</label>
+      <input id="partenaire-email-form" class="in" [(ngModel)]="form.email" type="email" placeholder="Email de l'administrateur">
       @if (!enEdition) {
-        <input class="in large" [(ngModel)]="form.nomAdministrateur" placeholder="Nom de l'administrateur du partenaire">
+        <label for="partenaire-nom-admin-form" class="sr-only">Nom de l'administrateur du partenaire</label>
+        <input id="partenaire-nom-admin-form" class="in large" [(ngModel)]="form.nomAdministrateur" placeholder="Nom de l'administrateur du partenaire">
       }
     </div>
     @if (erreur) { <div class="err">{{ erreur }}</div> }
@@ -97,6 +100,7 @@ import { Partenaire } from '../../models/models';
     .lien-danger { color:var(--rouge); border-color:rgba(215,25,32,.3); }
     .err { color:var(--rouge); font-size:12.5px; font-weight:700; margin-top:10px; }
     .ok { color:var(--vert); background:var(--vert-fond); border-radius:9px; padding:9px 12px; font-size:12.5px; font-weight:700; margin-top:10px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   `]
 })
 export class PartenairesComponent implements OnInit {
