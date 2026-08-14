@@ -144,21 +144,6 @@ import { ToastService } from '../../core/ui/toast.service';
         </div>
       </div>
 
-      <div class="upload">
-        <div class="upic">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d71920" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 4 3 3-2 6 4"/></svg>
-        </div>
-        <div class="upload-texte">
-          <div class="ut">{{ tr.t('verif.apercuPiece') }}</div>
-          <div class="us">{{ pieceFichier ? pieceFichier : tr.t('verif.glisserScan') }}</div>
-        </div>
-        <input #entreeFichier type="file" accept="image/*,.pdf" hidden (change)="choisirFichier($event)">
-        <button type="button" class="btn-parcourir" (click)="entreeFichier.click()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-          {{ tr.t('verif.parcourir') }}
-        </button>
-      </div>
-
       <div class="actions">
         <button class="navi btn-annuler-form" (click)="retour()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -390,13 +375,6 @@ import { ToastService } from '../../core/ui/toast.service';
     .btn-modifier:hover { border-color:var(--gris-bordure); }
     label { font-size:12.5px; font-weight:700; color:var(--texte); }
     .rouge { color:var(--rouge); }
-    .upload { display:flex; align-items:center; gap:14px; margin-top:22px; padding:15px 17px; border-radius:14px; background:var(--surface-2); border:1px dashed var(--bordure); }
-    .upic { flex:none; width:50px; height:50px; border-radius:12px; background:var(--surface); border:1px solid var(--bordure); display:flex; align-items:center; justify-content:center; }
-    .upload-texte { flex:1; min-width:0; }
-    .ut { font-size:13px; font-weight:700; color:var(--encre); }
-    .us { font-size:11.5px; color:var(--gris); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .btn-parcourir { flex:none; display:flex; align-items:center; gap:7px; border:1px solid rgba(215,25,32,.3); background:var(--surface); color:var(--rouge); cursor:pointer; padding:9px 16px; border-radius:10px; font-size:12.5px; font-weight:700; }
-    .btn-parcourir:hover { background:var(--rouge-fond); }
     .entete-form { display:flex; justify-content:flex-end; margin-bottom:14px; }
     .btn-effacer { display:flex; align-items:center; gap:7px; padding:8px 14px; border:1.5px solid rgba(215,25,32,.3); border-radius:10px; background:var(--rouge-fond); color:var(--rouge); font-size:12px; font-weight:700; cursor:pointer; }
     .btn-effacer:hover { background:rgba(215,25,32,.18); border-color:var(--rouge); }
@@ -473,7 +451,6 @@ export class VerificationComponent implements OnInit {
   reference = '';
   transfertExecute: Transfert | null = null;
   chargement = false;
-  pieceFichier = '';
 
   ngOnInit(): void {
     this.transferts.referentiel().subscribe({
@@ -667,14 +644,13 @@ export class VerificationComponent implements OnInit {
     this.form = this.vide();
     this.montantSaisi = '';
     this.manquants = [];
-    this.pieceFichier = '';
   }
 
   /** Un champ au moins a été saisi : affiche la barre « Effacer tous les champs ». */
   formulaireRempli(): boolean {
     const f = this.form;
     return !!(f.nomClient.trim() || f.dateNaissance || f.naturePiece || f.numeroPiece.trim()
-      || this.montantSaisi || f.paysDestination || this.pieceFichier);
+      || this.montantSaisi || f.paysDestination);
   }
 
   effacerFormulaire(): void {
@@ -682,13 +658,6 @@ export class VerificationComponent implements OnInit {
     this.montantSaisi = '';
     this.manquants = [];
     this.suggestions = [];
-    this.pieceFichier = '';
-  }
-
-  /** Sélection locale du scan de pièce d'identité (aperçu du nom de fichier uniquement, non transmis). */
-  choisirFichier(evenement: Event): void {
-    const fichier = (evenement.target as HTMLInputElement).files?.[0];
-    this.pieceFichier = fichier ? fichier.name : '';
   }
 
   private vide(): VerificationRequest {
