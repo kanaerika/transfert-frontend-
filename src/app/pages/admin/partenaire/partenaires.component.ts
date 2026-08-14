@@ -27,7 +27,7 @@ interface Confirmation {
   styleUrls: ['./partenaires.component.css']
 })
 export class PartenairesComponent implements OnInit {
-  service = inject(PartenaireService);
+  readonly service = inject(PartenaireService);
 
   afficherModal = false;
   partenaires: Partenaire[] = [];
@@ -227,7 +227,7 @@ export class PartenairesComponent implements OnInit {
       }
     });
   }
-  private router = inject(Router);
+  private readonly router = inject(Router);
   voir(partenaire: Partenaire){
 
   this.router.navigate([

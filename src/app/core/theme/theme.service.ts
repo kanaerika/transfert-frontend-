@@ -26,6 +26,6 @@ export class ThemeService {
   }
 
   private appliquer(theme: Theme): void {
-    document.documentElement.setAttribute('data-theme', theme === 'sombre' ? 'dark' : 'light');
+    document.documentElement.dataset.theme = theme === 'sombre' ? 'dark' : 'light';
   }
 }

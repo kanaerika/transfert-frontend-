@@ -8,7 +8,7 @@ export class TraductionService {
 
   langue = signal<Langue>((localStorage.getItem('langue') as Langue) || 'fr');
 
-  private dictionnaire: Record<string, { fr: string; en: string }> = {
+  private readonly dictionnaire: Record<string, { fr: string; en: string }> = {
     // --- Menu / layout ---
     'menu.titre': { fr: 'MENU', en: 'MENU' },
     'menu.verification': { fr: 'Vérification', en: 'Verification' },

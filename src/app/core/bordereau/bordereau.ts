@@ -84,7 +84,7 @@ export function imprimerBordereau(t: Transfert): void {
  
   <script>
     window.onload = function () { setTimeout(function () { window.print(); }, 600); };
-  <\/script>
+  </script>
 </body>
 </html>`;
  

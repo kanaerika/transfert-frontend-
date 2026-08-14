@@ -22,9 +22,9 @@ const TAILLE_DEFAUT = 110;
 })
 export class AdminLayoutComponent {
 
-  private auth = inject(AuthService);
-  private router = inject(Router);
-  theme = inject(ThemeService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  readonly theme = inject(ThemeService);
 
   /** Seul l'admin Afriland onboarde d'autres partenaires ; tous les admins gèrent leurs agents. */
   get estAdminAfriland(): boolean {
@@ -70,7 +70,7 @@ export class AdminLayoutComponent {
   }
 
   // ---- Titre de section (uniquement pour l'espace Transactions, qui n'a pas d'entête propre) ----
-  private titresTransactions: Record<string, [string, string]> = {
+  private readonly titresTransactions: Record<string, [string, string]> = {
     '/admin/transactions/verification':  ['Vérification du plafond', 'Contrôlez le plafond mensuel Hors CEMAC avant exécution'],
     '/admin/transactions/historique':    ['Historique des transferts', "Consultez l'ensemble des transferts enregistrés"],
     '/admin/transactions/bilan':         ['Bilan du jour', "Résumé de l'activité quotidienne des transferts"],
