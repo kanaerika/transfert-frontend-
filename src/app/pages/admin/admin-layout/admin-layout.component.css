@@ -154,9 +154,17 @@
 .logo-panel{
   display:flex;
   align-items:center;
-  min-height:56px;
+  min-height:64px;
   padding:9px 12px;
   border-radius:12px;
+  background:transparent;
+  box-shadow:none;
+}
+
+/* Le logo a un texte sombre non transparent : en mode sombre, il lui faut
+   un fond blanc pour rester lisible. En mode clair la barre latérale est déjà
+   blanche, donc ce fond serait redondant. */
+:root[data-theme="dark"] .logo-panel{
   background:#fff;
   box-shadow:0 8px 18px rgba(0,0,0,.16);
 }
@@ -164,7 +172,7 @@
 .logo img{
   display:block;
   width:100%;
-  max-height:38px;
+  max-height:48px;
   object-fit:contain;
 }
 
