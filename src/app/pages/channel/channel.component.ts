@@ -76,10 +76,10 @@ interface CanalUi {
   `]
 })
 export class ChannelComponent implements OnInit {
-  private auth = inject(AuthService);
-  private transferts = inject(TransfertService);
-  private router = inject(Router);
-  tr = inject(TraductionService);
+  private readonly auth = inject(AuthService);
+  private readonly transferts = inject(TransfertService);
+  private readonly router = inject(Router);
+  readonly tr = inject(TraductionService);
 
   // Valeurs par défaut, remplacées par le référentiel de l'API
   canaux: CanalUi[] = [

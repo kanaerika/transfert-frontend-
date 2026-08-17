@@ -7,7 +7,7 @@ import { imprimerBordereau } from '../../core/bordereau';
 import { TraductionService } from '../../core/traduction/traduction.service';
 import { ToastService } from '../../core/ui/toast.service';
  
-type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
+type Mode = 'historique' | 'annulation' | 'non-cloture';
  
 @Component({
   selector: 'app-liste',
@@ -257,9 +257,9 @@ type Mode = 'historique' | 'annulation' | 'justificatifs' | 'non-cloture';
   `]
 })
 export class ListeComponent implements OnInit {
-  private transferts_ = inject(TransfertService);
-  private route = inject(ActivatedRoute);
-  private toast = inject(ToastService);
+  private readonly transferts_ = inject(TransfertService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toast = inject(ToastService);
 
   mode: Mode = 'historique';
   transferts: Transfert[] = [];

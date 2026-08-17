@@ -25,7 +25,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   styleUrls: ['./forgot-password.component.css']
 })
 export class ForgotPasswordComponent {
-  tr = inject(TraductionService);
+  readonly tr = inject(TraductionService);
 
   etape: 1 | 2 | 3 = 1;
 

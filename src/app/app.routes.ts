@@ -80,12 +80,6 @@ export const routes: Routes = [
             data: { mode: 'non-cloture' }
           },
           {
-            path: 'justificatifs',
-            loadComponent: () =>
-              import('./pages/liste/liste.component').then(m => m.ListeComponent),
-            data: { mode: 'justificatifs' }
-          },
-          {
            path: 'bilan',
            loadComponent: () =>
             import('./pages/bilan/bilan.component').then(m => m.BilanComponent)
@@ -170,12 +164,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/liste/liste.component').then(m => m.ListeComponent),
         data: { mode: 'non-cloture' }
-      },
-      {
-        path: 'justificatifs',
-        loadComponent: () =>
-          import('./pages/liste/liste.component').then(m => m.ListeComponent),
-        data: { mode: 'justificatifs' }
       },
       {
         path: 'bilan',

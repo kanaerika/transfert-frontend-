@@ -127,7 +127,7 @@ import { TransfertCardComponent } from '../../shared/transfert-card.component';
   `]
 })
 export class BilanComponent implements OnInit {
-  private transferts = inject(TransfertService);
+  private readonly transferts = inject(TransfertService);
 
   bilan: Bilan | null = null;
   erreur = '';

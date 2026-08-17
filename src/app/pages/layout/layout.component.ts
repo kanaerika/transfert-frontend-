@@ -41,11 +41,6 @@ import { ThemeService } from '../../core/theme/theme.service';
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             {{ tr.t('menu.nonClotures') }}
           </a>
-          <a class="navi item" routerLink="/app/justificatifs" routerLinkActive="actif">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            {{ tr.t('menu.justificatifs') }}
-          </a>
-
           @if (auth.role() === 'ADMIN') {
             <a class="navi item" routerLink="/admin/dashboard">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -160,10 +155,10 @@ import { ThemeService } from '../../core/theme/theme.service';
   `]
 })
 export class LayoutComponent {
-  auth = inject(AuthService);
-  tr = inject(TraductionService);
-  theme = inject(ThemeService);
-  private router = inject(Router);
+  readonly auth = inject(AuthService);
+  readonly tr = inject(TraductionService);
+  readonly theme = inject(ThemeService);
+  private readonly router = inject(Router);
  
   get nomAgent(): string { return this.auth.agent?.nomComplet ?? this.tr.t('layout.agentParDefaut'); }
   get codeAgent(): string { return this.auth.agent?.codeAgent ?? '—'; }
@@ -183,7 +178,7 @@ export class LayoutComponent {
     '/app/historique':     ['layout.titreHistorique', 'layout.sousTitreHistorique'],
     '/app/bilan':          ['layout.titreBilan', 'layout.sousTitreBilan'],
     '/app/annulation':     ['layout.titreAnnulation', 'layout.sousTitreAnnulation'],
-    '/app/justificatifs':  ['layout.titreJustificatifs', 'layout.sousTitreJustificatifs'],
+    '/app/non-cloture':    ['layout.titreNonClotures', 'layout.sousTitreNonClotures'],
     '/app/details':        ['layout.titreDetails', 'layout.sousTitreDetails']
   };
 

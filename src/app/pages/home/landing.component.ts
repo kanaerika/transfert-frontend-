@@ -312,5 +312,5 @@ import { TraductionService } from '../../core/traduction/traduction.service';
   `]
 })
 export class LandingComponent {
-  tr = inject(TraductionService);
+  readonly tr = inject(TraductionService);
 }

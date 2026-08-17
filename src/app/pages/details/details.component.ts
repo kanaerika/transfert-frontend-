@@ -46,9 +46,9 @@ import { TransfertCardComponent } from '../../shared/transfert-card.component';
   `]
 })
 export class DetailsComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private transferts = inject(TransfertService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly transferts = inject(TransfertService);
 
   t = signal<Transfert | null>(null);
   erreur = signal('');

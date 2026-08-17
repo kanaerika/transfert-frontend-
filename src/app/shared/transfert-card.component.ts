@@ -258,7 +258,7 @@ interface InfoStatut {
   `]
 })
 export class TransfertCardComponent {
-  private transferts = inject(TransfertService);
+  private readonly transferts = inject(TransfertService);
 
   @Input() transfert: Transfert | null = null;
   @Input() popup = false;

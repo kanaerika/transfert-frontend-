@@ -11,12 +11,11 @@ export class TraductionService {
   private readonly dictionnaire: Record<string, { fr: string; en: string }> = {
     // --- Menu / layout ---
     'menu.titre': { fr: 'MENU', en: 'MENU' },
-    'menu.verification': { fr: 'Vérification', en: 'Verification' },
+    'menu.verification': { fr: 'Nouveau transfert', en: 'New transfer' },
     'menu.historique': { fr: 'Historique', en: 'History' },
     'menu.bilan': { fr: 'Bilan journalier', en: 'Daily summary' },
     'menu.annulation': { fr: 'Annuler un transfert', en: 'Cancel a transfer' },
     'menu.nonClotures': { fr: 'Non clôturés', en: 'Not closed' },
-    'menu.justificatifs': { fr: 'Pièces justificatives', en: 'Supporting documents' },
     'menu.admin': { fr: 'Administration', en: 'Administration' },
     'menu.espaceAdministration': { fr: 'Espace administration', en: 'Admin area' },
     'menu.deconnexion': { fr: 'Se déconnecter', en: 'Log out' },
@@ -31,8 +30,8 @@ export class TraductionService {
     'layout.sousTitreBilan': { fr: 'Activité du jour · Agent DRI', en: "Today's activity · DRI Agent" },
     'layout.titreAnnulation': { fr: 'Annuler un transfert exécuté', en: 'Cancel an executed transfer' },
     'layout.sousTitreAnnulation': { fr: "Sélectionnez l'opération à annuler", en: 'Select the operation to cancel' },
-    'layout.titreJustificatifs': { fr: 'Transferts en attente de pièces', en: 'Transfers awaiting documents' },
-    'layout.sousTitreJustificatifs': { fr: 'Documents justificatifs à charger', en: 'Supporting documents to upload' },
+    'layout.titreNonClotures': { fr: 'Transferts non clôturés', en: 'Unclosed transfers' },
+    'layout.sousTitreNonClotures': { fr: 'Autorisés en attente de référence plateforme', en: 'Authorised, awaiting platform reference' },
     'layout.titreDetails': { fr: "Détails de l'opération", en: 'Operation details' },
     'layout.sousTitreDetails': { fr: 'Fiche complète de la transaction', en: 'Full transaction record' },
 

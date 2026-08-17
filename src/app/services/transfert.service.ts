@@ -8,7 +8,7 @@ import { environment } from '../environment/environment';
  
 @Injectable({ providedIn: 'root' })
 export class TransfertService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private api = environment.apiUrl;
  
   clientsConnus(q: string) {

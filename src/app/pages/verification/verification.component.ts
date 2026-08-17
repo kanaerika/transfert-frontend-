@@ -434,10 +434,10 @@ import { ToastService } from '../../core/ui/toast.service';
   `]
 })
 export class VerificationComponent implements OnInit {
-  private transferts = inject(TransfertService);
-  private auth = inject(AuthService);
-  private toast = inject(ToastService);
-  tr = inject(TraductionService);
+  private readonly transferts = inject(TransfertService);
+  private readonly auth = inject(AuthService);
+  private readonly toast = inject(ToastService);
+  readonly tr = inject(TraductionService);
 
   natures: string[] = [];
   pays: string[] = [];

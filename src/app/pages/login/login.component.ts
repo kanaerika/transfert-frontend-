@@ -176,7 +176,7 @@ import { TraductionService } from '../../core/traduction/traduction.service';
 export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  tr = inject(TraductionService);
+  readonly tr = inject(TraductionService);
 
   email = '';
   motDePasse = '';

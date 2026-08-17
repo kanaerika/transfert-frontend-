@@ -75,7 +75,7 @@ export class AdminLayoutComponent {
     '/admin/transactions/historique':    ['Historique des transferts', "Consultez l'ensemble des transferts enregistrés"],
     '/admin/transactions/bilan':         ['Bilan du jour', "Résumé de l'activité quotidienne des transferts"],
     '/admin/transactions/annulation':    ['Annulation & rejet', 'Annulez ou rejetez un transfert en attente'],
-    '/admin/transactions/justificatifs': ['Justificatifs', 'Transferts en attente de pièce justificative']
+    '/admin/transactions/non-cloture':   ['Non clôturés', 'Transferts autorisés en attente de référence']
   };
 
   private entreeTitre(): [string, string] | undefined {

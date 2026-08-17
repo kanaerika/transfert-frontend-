@@ -13,7 +13,7 @@ export interface MessageResponse {
 @Injectable({ providedIn: 'root' })
 export class PasswordResetService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   /** Étape 1 : demande l'envoi du code OTP par SMS */
   forgotPassword(telephone: string): Observable<MessageResponse> {
