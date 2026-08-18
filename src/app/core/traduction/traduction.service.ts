@@ -219,6 +219,7 @@ export class TraductionService {
     'verif.erreurPieceFormat': { fr: 'Le n° de pièce ne doit contenir que des lettres et des chiffres (sans espaces).', en: 'The ID number must contain only letters and digits (no spaces).' },
     'verif.erreurPieceCourt': { fr: 'N° de pièce trop court pour une pièce de type « {nature} » (minimum {min} caractères).', en: 'ID number too short for a document of type "{nature}" (minimum {min} characters).' },
     'verif.erreurCniFormat': { fr: "N° de CNI invalide : attendu 18 chiffres (ancienne carte) ou 2 lettres suivies de 8 chiffres (nouvelle carte).", en: 'Invalid ID number: expected 18 digits (old card) or 2 letters followed by 8 digits (new card).' },
+    'verif.erreurPlafondAtteint': { fr: 'Ce client a déjà atteint son plafond mensuel ({cumul} / {plafond} FCFA). Transfert bloqué.', en: 'This client has already reached their monthly cap ({cumul} / {plafond} FCFA). Transfer blocked.' },
     'verif.libelleNom': { fr: 'le nom du client', en: "the client's name" },
     'verif.libelleDate': { fr: 'la date de naissance (jj-mm-aaaa)', en: 'the date of birth (dd-mm-yyyy)' },
     'verif.libelleNature': { fr: 'la nature de la pièce', en: 'the ID type' },
@@ -231,6 +232,15 @@ export class TraductionService {
     'verif.erreurVerification': { fr: 'Erreur lors de la vérification (code {code}). Réessayez.', en: 'Error during verification (code {code}). Please try again.' },
     'verif.erreurReference': { fr: "Veuillez saisir la référence de l'opération.", en: 'Please enter the operation reference.' },
     'verif.erreurExecution': { fr: "Impossible d'exécuter le transfert.", en: 'Unable to execute the transfer.' },
+    'verif.quitterTitre': { fr: 'Transaction non terminée', en: 'Unfinished transaction' },
+    'verif.quitterMessage': { fr: "Vous n'avez pas encore terminé ce transfert. Voulez-vous continuer, ou annuler cette opération ?", en: "You haven't finished this transfer yet. Do you want to continue, or cancel this operation?" },
+    'verif.quitterContinuer': { fr: 'Continuer', en: 'Continue' },
+    'verif.motifAbandonTitre': { fr: "Justifier l'abandon", en: 'Justify the cancellation' },
+    'verif.motifAbandonLabel': { fr: 'Motif de l’abandon — obligatoire', en: 'Reason for cancelling — required' },
+    'verif.motifAbandonPlaceholder': { fr: 'Expliquez pourquoi ce transfert est abandonné (au moins 10 caractères)…', en: 'Explain why this transfer is being cancelled (at least 10 characters)…' },
+    'verif.motifAbandonConfirmer': { fr: "Confirmer l'abandon", en: 'Confirm cancellation' },
+    'verif.motifValide': { fr: '✓ Motif valide', en: '✓ Valid reason' },
+    'verif.motifCompteur': { fr: '{n}/10 caractères minimum', en: '{n}/10 characters minimum' },
 
     // --- Historique / annulation / justificatifs (liste) ---
     'liste.placeholderRecherche': { fr: 'Rechercher un client, une référence…', en: 'Search a client, a reference…' },

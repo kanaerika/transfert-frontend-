@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, firstLoginGuard, roleGuard, afrilandGuard } from './core/auth.guard';
+import { verificationGuard } from './pages/verification/verification.guard';
 
 export const routes: Routes = [
 
@@ -59,7 +60,8 @@ export const routes: Routes = [
             path: 'verification',
             loadComponent: () =>
               import('./pages/verification/verification.component')
-                .then(m => m.VerificationComponent)
+                .then(m => m.VerificationComponent),
+            canDeactivate: [verificationGuard]
           },
           {
             path: 'historique',
@@ -145,7 +147,8 @@ export const routes: Routes = [
         path: 'verification',
         loadComponent: () =>
           import('./pages/verification/verification.component')
-            .then(m => m.VerificationComponent)
+            .then(m => m.VerificationComponent),
+        canDeactivate: [verificationGuard]
       },
       {
         path: 'historique',

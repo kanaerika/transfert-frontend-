@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
-  Bilan, ClientConnu, Referentiel, Transfert,
+  Bilan, ClientConnu, PlafondClient, Referentiel, Transfert,
   VerificationRequest, VerificationResponse
 } from '../models/models';
 import { environment } from '../environment/environment';
@@ -22,6 +22,16 @@ export class TransfertService {
  
   verifier(req: VerificationRequest) {
     return this.http.post<VerificationResponse>(`${this.api}/transferts/verification`, req);
+  }
+
+  /** Contrôle en lecture seule (sans enregistrement) du plafond déjà atteint par un client. */
+  plafondClient(nomClient: string, numeroPiece: string, dateNaissance: string) {
+    return this.http.get<PlafondClient>(`${this.api}/transferts/plafond-client`, {
+      params: new HttpParams()
+        .set('nomClient', nomClient)
+        .set('numeroPiece', numeroPiece)
+        .set('dateNaissance', dateNaissance)
+    });
   }
  
   executer(req: VerificationRequest & { reference: string; canal: string; transfertId?: number | null }) {

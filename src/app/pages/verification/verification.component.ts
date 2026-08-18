@@ -6,6 +6,7 @@ import { ClientConnu, Transfert, VerificationRequest, VerificationResponse } fro
 import { imprimerBordereau } from '../../core/bordereau';
 import { TraductionService } from '../../core/traduction/traduction.service';
 import { ToastService } from '../../core/ui/toast.service';
+import { ConfirmService } from '../../core/ui/confirm.service';
 
 @Component({
   selector: 'app-verification',
@@ -108,9 +109,11 @@ import { ToastService } from '../../core/ui/toast.service';
           <label for="champ-numero-piece-verif">{{ tr.t('verif.labelNumeroPiece') }}</label>
           <div class="in-wrap">
             <span class="in-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M14 10h4M14 14h4"/></svg></span>
-            <input id="champ-numero-piece-verif" class="in in-icone" [class.in-err]="manquants.includes('piece')" [(ngModel)]="form.numeroPiece"
+            <input id="champ-numero-piece-verif" class="in in-icone" [class.in-err]="manquants.includes('piece')" [ngModel]="form.numeroPiece"
+                   (ngModelChange)="saisirNumeroPiece($event)"
                    placeholder="{{ tr.t('verif.placeholderNumero') }}" (keyup.enter)="verifier()">
           </div>
+          @if (cniAlerte) { <div class="alerte-champ">{{ cniAlerte }}</div> }
         </div>
       </div>
 
@@ -288,7 +291,7 @@ import { ToastService } from '../../core/ui/toast.service';
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 {{ chargement ? tr.t('verif.envoiEnCours') : tr.t('verif.soumettre') }}
               </button>
-              <button class="navi btn-annuler" (click)="retour()">
+              <button class="navi btn-annuler" (click)="annulerTransfertEnCours()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 {{ tr.t('commun.annuler') }}
               </button>
@@ -297,6 +300,31 @@ import { ToastService } from '../../core/ui/toast.service';
         } @else {
           <button class="lift btn-retour" (click)="retour()">{{ tr.t('verif.retourVerification') }}</button>
         }
+      </div>
+    </div>
+  }
+
+  <!-- ================= POPUP : justification en cas d'abandon ================= -->
+  @if (annulationOuverte) {
+    <div class="voile" (click)="fermerAnnulation()">
+      <div class="popup" (click)="$event.stopPropagation()">
+        <div class="popup-tete">
+          <div class="popup-titre">{{ tr.t('verif.motifAbandonTitre') }}</div>
+          <button class="popup-x" (click)="fermerAnnulation()">✕</button>
+        </div>
+        <label class="popup-label" for="motif-abandon">{{ tr.t('verif.motifAbandonLabel') }}</label>
+        <textarea id="motif-abandon" class="in motif-zone" [(ngModel)]="motifAnnulation" rows="3"
+                  placeholder="{{ tr.t('verif.motifAbandonPlaceholder') }}"></textarea>
+        <div class="motif-compteur" [class.ok]="motifAnnulation.trim().length >= 10">
+          {{ motifAnnulation.trim().length >= 10 ? tr.t('verif.motifValide') : tr.t('verif.motifCompteur', { n: motifAnnulation.trim().length }) }}
+        </div>
+        <div class="popup-actions">
+          <button class="navi btn-gris" (click)="fermerAnnulation()">{{ tr.t('commun.retour') }}</button>
+          <button class="lift btn btn-confirm" [disabled]="motifAnnulation.trim().length < 10 || chargement"
+                  (click)="confirmerAnnulation()">
+            {{ chargement ? tr.t('verif.envoiEnCours') : tr.t('verif.motifAbandonConfirmer') }}
+          </button>
+        </div>
       </div>
     </div>
   }
@@ -329,6 +357,7 @@ import { ToastService } from '../../core/ui/toast.service';
     .in-ic { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--texte-faible); display:flex; pointer-events:none; }
     .in-icone { padding-left:38px; }
     .in-err { border-color:var(--rouge) !important; background:var(--rouge-fond); }
+    .alerte-champ { margin-top:7px; font-size:12px; font-weight:700; color:var(--rouge); line-height:1.4; }
     .montant { font-weight:700; letter-spacing:.5px; }
     .rapides { display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
     .puce { border:1px solid var(--bordure); background:var(--surface-2); color:var(--texte); font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px; cursor:pointer; }
@@ -431,12 +460,29 @@ import { ToastService } from '../../core/ui/toast.service';
     .exec-actions .btn { flex:1; padding:13px; display:flex; align-items:center; justify-content:center; gap:8px; }
     .btn-annuler { flex:none; display:flex; align-items:center; gap:8px; border:1px solid var(--bordure); cursor:pointer; padding:13px 20px; border-radius:12px; font-size:14px; font-weight:600; color:var(--texte); background:var(--surface); }
     .btn-retour { border:1px solid var(--bordure); cursor:pointer; padding:14px; border-radius:13px; font-size:14px; font-weight:700; color:var(--encre); background:var(--surface); }
+
+    /* Popup de justification d'abandon */
+    .voile { position:fixed; inset:0; z-index:100; background:rgba(12,14,18,.55); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; padding:20px; }
+    .popup { background:var(--surface); border-radius:18px; width:100%; max-width:460px; padding:26px 28px; box-shadow:0 30px 70px -20px rgba(0,0,0,.5); animation:pop .18s ease-out; }
+    @keyframes pop { from { transform:scale(.94); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .popup-tete { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .popup-titre { font-size:18px; font-weight:800; letter-spacing:-.3px; color:var(--rouge); }
+    .popup-x { border:none; background:var(--gris-clair); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:13px; color:var(--gris); }
+    .popup-x:hover { background:var(--bordure); }
+    .popup-label { display:block; font-size:13px; font-weight:700; margin-bottom:7px; }
+    .motif-zone { width:100%; resize:vertical; font-family:inherit; background:var(--surface); color:var(--texte); }
+    .motif-compteur { font-size:11.5px; color:var(--rouge); font-weight:700; margin-top:6px; }
+    .motif-compteur.ok { color:var(--vert); }
+    .popup-actions { display:flex; gap:12px; margin-top:20px; }
+    .popup-actions .btn-confirm { flex:1; }
+    .btn-gris { border:1px solid var(--bordure); cursor:pointer; padding:11px 20px; border-radius:12px; font-size:13px; font-weight:700; color:var(--encre); background:var(--surface); }
   `]
 })
 export class VerificationComponent implements OnInit {
   private readonly transferts = inject(TransfertService);
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
+  private readonly confirm = inject(ConfirmService);
   readonly tr = inject(TraductionService);
 
   natures: string[] = [];
@@ -449,10 +495,16 @@ export class VerificationComponent implements OnInit {
   manquants: string[] = [];
   suggestions: ClientConnu[] = [];
   private timerSuggestions: ReturnType<typeof setTimeout> | undefined;
+  cniAlerte = '';
+  private timerCni: ReturnType<typeof setTimeout> | undefined;
   resultat: VerificationResponse | null = null;
   reference = '';
   transfertExecute: Transfert | null = null;
   chargement = false;
+
+  annulationOuverte = false;
+  motifAnnulation = '';
+  private resoudreQuitter: ((valeur: boolean) => void) | null = null;
 
   ngOnInit(): void {
     this.transferts.referentiel().subscribe({
@@ -496,6 +548,7 @@ export class VerificationComponent implements OnInit {
         error: () => this.suggestions = []
       });
     }, 250);
+    this.verifierPlafondCni();
   }
 
   /** L'agent clique sur un client connu : tout se remplit automatiquement. */
@@ -505,6 +558,39 @@ export class VerificationComponent implements OnInit {
     this.form.naturePiece = c.naturePiece;
     this.form.numeroPiece = c.numeroPiece;
     this.suggestions = [];
+    this.verifierPlafondCni();
+  }
+
+  /** Saisie du n° de pièce : relance le contrôle live du plafond dès que les 3 champs sont là. */
+  saisirNumeroPiece(valeur: string): void {
+    this.form.numeroPiece = valeur;
+    this.manquants = this.manquants.filter(m => m !== 'piece');
+    this.cniAlerte = '';
+    this.verifierPlafondCni();
+  }
+
+  /**
+   * Contrôle en lecture seule : si ce client (nom + n° de pièce + date de naissance) a déjà
+   * atteint son plafond mensuel, bloque la saisie avec un message sous le champ CNI.
+   */
+  private verifierPlafondCni(): void {
+    clearTimeout(this.timerCni);
+    this.cniAlerte = '';
+    const f = this.form;
+    if (!f.nomClient.trim() || !f.numeroPiece.trim() || f.dateNaissance.replace(/\D/g, '').length < 8) {
+      return;
+    }
+    this.timerCni = setTimeout(() => {
+      this.transferts.plafondClient(f.nomClient.trim(), f.numeroPiece.trim(), f.dateNaissance).subscribe({
+        next: res => {
+          if (res.depasse) {
+            this.cniAlerte = this.tr.t('verif.erreurPlafondAtteint', { cumul: this.fmt(res.cumul), plafond: this.fmt(res.plafond) });
+            if (!this.manquants.includes('piece')) this.manquants.push('piece');
+          }
+        },
+        error: () => {}
+      });
+    }, 300);
   }
 
   fermerSuggestionsBientot(): void {
@@ -545,9 +631,14 @@ export class VerificationComponent implements OnInit {
     if (c.length > 4) out = `${c.slice(0, 2)}-${c.slice(2, 4)}-${c.slice(4)}`;
     else if (c.length > 2) out = `${c.slice(0, 2)}-${c.slice(2)}`;
     this.form.dateNaissance = out;
+    this.verifierPlafondCni();
   }
 
   verifier(): void {
+    if (this.cniAlerte) {
+      this.toast.erreur(this.cniAlerte);
+      return;
+    }
     this.form.montant = Number.parseInt(this.montantSaisi.replace(/\D/g, ''), 10) || 0;
     const f = this.form;
 
@@ -646,6 +737,65 @@ export class VerificationComponent implements OnInit {
     this.form = this.vide();
     this.montantSaisi = '';
     this.manquants = [];
+    this.cniAlerte = '';
+  }
+
+  /**
+   * Appelé par le garde de navigation (canDeactivate) : tant que la vérification est autorisée
+   * mais pas encore exécutée, on empêche de quitter la page sans confirmer ou justifier l'abandon.
+   */
+  async peutQuitter(): Promise<boolean> {
+    if (!this.resultat?.autorise || this.transfertExecute) return true;
+    const continuer = await this.confirm.demander({
+      titre: this.tr.t('verif.quitterTitre'),
+      message: this.tr.t('verif.quitterMessage'),
+      texteConfirmer: this.tr.t('verif.quitterContinuer'),
+      texteAnnuler: this.tr.t('commun.annuler')
+    });
+    if (continuer) return false; // reste sur la page, transfert toujours en cours
+    return this.demanderMotifAnnulation();
+  }
+
+  /** Bouton « Annuler » à côté de « Soumettre » : mêmes règles, sans navigation. */
+  annulerTransfertEnCours(): void {
+    this.demanderMotifAnnulation().then(confirme => { if (confirme) this.retour(); });
+  }
+
+  private demanderMotifAnnulation(): Promise<boolean> {
+    this.annulationOuverte = true;
+    this.motifAnnulation = '';
+    return new Promise<boolean>(resoudre => { this.resoudreQuitter = resoudre; });
+  }
+
+  fermerAnnulation(): void {
+    this.annulationOuverte = false;
+    this.motifAnnulation = '';
+    this.resoudreQuitter?.(false);
+    this.resoudreQuitter = null;
+  }
+
+  confirmerAnnulation(): void {
+    if (this.motifAnnulation.trim().length < 10) return;
+    const id = this.resultat?.transfertId;
+    if (!id) {
+      this.annulationOuverte = false;
+      this.resoudreQuitter?.(true);
+      this.resoudreQuitter = null;
+      return;
+    }
+    this.chargement = true;
+    this.transferts.rejeter(id, this.motifAnnulation.trim()).subscribe({
+      next: () => {
+        this.chargement = false;
+        this.annulationOuverte = false;
+        this.resoudreQuitter?.(true);
+        this.resoudreQuitter = null;
+      },
+      error: err => {
+        this.chargement = false;
+        this.toast.erreur(err?.error?.message ?? "Impossible d'annuler ce transfert.");
+      }
+    });
   }
 
   /** Un champ au moins a été saisi : affiche la barre « Effacer tous les champs ». */
@@ -660,6 +810,7 @@ export class VerificationComponent implements OnInit {
     this.montantSaisi = '';
     this.manquants = [];
     this.suggestions = [];
+    this.cniAlerte = '';
   }
 
   private vide(): VerificationRequest {

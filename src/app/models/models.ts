@@ -65,6 +65,12 @@ export interface Transfert {
   agentNom?: string;
 }
  
+export interface PlafondClient {
+  cumul: number;
+  plafond: number;
+  depasse: boolean;
+}
+
 export interface Bilan {
   jour: string;
   executes: number;
